@@ -1,0 +1,51 @@
+ARG DRBD_VER
+
+FROM ubuntu:focal as compiler-utils
+
+RUN apt-get update && \
+    apt-get install -y build-essential wget flex automake 
+
+# Compile drbd-utils statically for all Linux distros
+ARG DRBD_UTILS_VER
+
+RUN wget --no-check-certificate https://pkg.linbit.com//downloads/drbd/utils/drbd-utils-${DRBD_UTILS_VER}.tar.gz && \
+    tar -zxf drbd-utils-${DRBD_UTILS_VER}.tar.gz
+
+RUN cd drbd-utils-${DRBD_UTILS_VER} && \
+    ./configure \
+    --with-prebuiltman \
+    --with-drbdmon \
+    --without-83support \
+    --without-84support \
+    --without-manual \
+    --without-xen \
+    --without-heartbeat \
+    CFLAGS="-static" LDFLAGS="-static" && \
+    make tools && \
+    mkdir /drbd-utils && \
+    find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /drbd-utils/ \;
+
+FROM drbd9-compiler-centos7:v${DRBD_VER} AS compiler-centos7
+
+FROM drbd9-compiler-centos8:v${DRBD_VER} AS compiler-centos8
+
+# Create shipper
+FROM busybox
+
+ARG DRBD_VER
+
+COPY --from=compiler-utils /drbd-utils /files/drbd-utils
+
+COPY --from=compiler-centos7 /pkgs/ /files/
+
+COPY --from=compiler-centos8 /pkgs/ /files/
+
+COPY drbd-reactor.toml /files/
+
+COPY drbd.modules-load.conf /files/
+
+COPY entrypoint.adapter.sh /files/
+
+RUN chmod -v +x /files/entrypoint.adapter.sh
+
+CMD mv -vf /files/* /pkgs/
