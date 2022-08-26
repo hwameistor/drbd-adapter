@@ -33,7 +33,7 @@ shipper:
 		--build-arg DRBD_UTILS_VER=$(DRBD_UTILS_VER) \
 		-t drbd9-shipper:v$(DRBD_VER)
 
-all: compiler adapter
+all: drbd9 compiler-centos7 compiler-centos8 shipper
 
 cleanup:
 	docker volume rm pkgs || true
