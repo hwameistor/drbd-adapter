@@ -49,5 +49,11 @@ $ apt-get install -y linux-headers-$(uname -r)
 Deploy the below `DaemonSet`. It will bring up a pod on each kubernetes worker node to install DRBD modules and tools:
 
 ```
-$ helm install drbd-adapter helm/drbd-adapter
+$ helm repo add drbd-adapter https://hwameistor.io/drbd-adapter
+
+$ helm repo update drbd-adapter
+
+$ helm pull drbd-adapter/drbd-adapter --untar
+
+$ helm install drbd-adapter ./drbd-adapter
 ```
