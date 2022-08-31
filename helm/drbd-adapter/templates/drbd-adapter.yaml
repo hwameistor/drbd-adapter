@@ -1,27 +1,28 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: drbd9
+  name: drbd-adapter
   labels:
-    k8s-app: drbd9
+    k8s-app: drbd-adapter
 spec:
   selector:
     matchLabels:
-      name: drbd9
+      k8s-app: drbd-adapter
   template:
     metadata:
       labels:
-        name: drbd9
+        k8s-app: drbd-adapter
     spec:
       initContainers:
       - name: shipper
-        image: daocloud.io/daocloud/drbd9-shipper:v9.1.8
+        image: {{ .Values.registry}}/drbd9-shipper:{{ .Values.drbdVersion}}
         imagePullPolicy: Always
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
-      - name: drbd9-rhel7
-        image: daocloud.io/daocloud/drbd9-rhel7:v9.1.8
+
+      - name: rhel7
+        image: {{ .Values.registry}}/drbd9-rhel7:{{ .Values.drbdVersion}}
         imagePullPolicy: Always
         command: [ /pkgs/entrypoint.adapter.sh ]
         securityContext:
@@ -44,12 +45,12 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
         - name: usr-local-bin
-          mountPath: /usr/local/bin
+          mountPath: /usr-local-bin
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
 
-      - name: drbd9-rhel8
-        image: daocloud.io/daocloud/drbd9-rhel8:v9.1.8
+      - name: rhel8
+        image: {{ .Values.registry}}/drbd9-rhel8:{{ .Values.drbdVersion}}
         imagePullPolicy: Always
         command: [ /pkgs/entrypoint.adapter.sh ]
         securityContext:
@@ -72,12 +73,12 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
         - name: usr-local-bin
-          mountPath: /usr/local/bin
+          mountPath: /usr-local-bin
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
 
-      - name: drbd9-bionic
-        image: daocloud.io/daocloud/drbd9-bionic:v9.1.8
+      - name: bionic
+        image: {{ .Values.registry}}/drbd9-bionic:{{ .Values.drbdVersion}}
         imagePullPolicy: Always
         command: [ /pkgs/entrypoint.adapter.sh ]
         securityContext:
@@ -97,12 +98,12 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
         - name: usr-local-bin
-          mountPath: /usr/local/bin
+          mountPath: /usr-local-bin
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
 
-      - name: drbd9-focal
-        image: daocloud.io/daocloud/drbd9-focal:v9.1.8
+      - name: focal
+        image: {{ .Values.registry}}/drbd9-focal:{{ .Values.drbdVersion}}
         imagePullPolicy: Always
         command: [ /pkgs/entrypoint.adapter.sh ]
         securityContext:
@@ -122,12 +123,12 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
         - name: usr-local-bin
-          mountPath: /usr/local/bin
+          mountPath: /usr-local-bin
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
 
-      - name: drbd9-jammy
-        image: daocloud.io/daocloud/drbd9-jammy:v9.1.8
+      - name: jammy
+        image: {{ .Values.registry}}/drbd9-jammy:{{ .Values.drbdVersion}}
         imagePullPolicy: Always
         command: [ /pkgs/entrypoint.adapter.sh ]
         securityContext:
@@ -147,18 +148,18 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
         - name: usr-local-bin
-          mountPath: /usr/local/bin
+          mountPath: /usr-local-bin
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
 
       containers:
       - name: monitor
-        image: daocloud.io/daocloud/drbd-reactor
+        image: quay.io/piraeusdatastore/drbd-reactor
         imagePullPolicy: IfNotPresent
         command:
-        - drbd-reactor 
-        - -c
-        - /pkgs/drbd-reactor.toml
+        - tail
+        - -f
+        - /dev/null
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
@@ -186,10 +187,7 @@ spec:
       - name: etc-modules-load
         hostPath:
           path: /etc/modules-load.d
+
       affinity:
         nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: node-role.kubernetes.io/master
-                operator: DoesNotExist
+		 {{- toYaml .Values.affinity.nodeAffinity | nindent 10 }}

@@ -2,10 +2,15 @@
 
 # Check if image matches os type
 
-image_type="$(lbdisttool.py -l | cut -d'.' -f1 )"
-host_type="$(lbdisttool.py -l --os-release /etc/host-release | cut -d'.' -f1 )"
+which lbdisttool.py
 
-[[ "$host_type" != "$image_type" ]] && echo "Image type does not match OS type, skip !" && exit 0
+image_type="$(lbdisttool.py -l | awk -F'.' '{print $1}' )"
+host_type="$(lbdisttool.py -l --os-release /etc/host-release | awk -F'.' '{print $1}' )"
+
+if [ -z $host_type ] || [[ $host_type != $image_type ]]; then 
+   echo "Image type does not match OS type, skip !" 
+   exit 0
+fi
 
 # If no shipped module is found, then compile from source
 if LB_HOW=shipped_modules bash -x /entry.sh; then
@@ -23,7 +28,7 @@ if [[ $LB_DROP == yes ]]; then
    # register modules
    depmod -a
    # onboot load modules 
-   cp -vf /pkgs/drbd.modules-load /etc/modules-load.d/hwameistor.drbd.conf
+   cp -vf /pkgs/drbd.modules-load.conf /etc/modules-load.d/drbd.conf
    # drop drbd utils
-   cp -vf /pkgs/drbd-utils/* /usr/local/bin/
+   cp -vf /pkgs/drbd-utils/* /usr-local-bin/
 fi
