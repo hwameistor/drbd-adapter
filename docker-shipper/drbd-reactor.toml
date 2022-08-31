@@ -1,4 +1,0 @@
-snippets = "/etc/drbd-reactor.d"
-statistics-poll-interval = 60
-[[log]]
-level = "trace"
