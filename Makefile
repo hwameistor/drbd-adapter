@@ -4,7 +4,7 @@ KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
 IMG ?= shipper rhel7 rhel8 bionic focal jammy
-REG ?= daocloud.io/daocloud
+REG ?= ghcr.io/hwameistor
 
 drbd9:
 	 cd docker-drbd9 && \

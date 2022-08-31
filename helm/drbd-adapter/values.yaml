@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-registry: ghcr.io/alexzhc
+registry: ghcr.io/hwameistor
 
 drbdVersion: v9.1.8
 
