@@ -7,7 +7,15 @@ which lbdisttool.py
 image_type="$(lbdisttool.py -l | awk -F'.' '{print $1}' )"
 host_type="$(lbdisttool.py -l --os-release /etc/host-release | awk -F'.' '{print $1}' )"
 
-if [ -z $host_type ] || [[ $host_type != $image_type ]]; then 
+# For Kylin v10, use RHEL 8 base for now
+if [ -z $host_type ] \
+   && uname -r | grep -i '.ky10.' \
+   && grep -iw kylin /etc/host-release; then
+   echo "Host distro is Kylin V10"
+   host_type=rhel8
+fi
+
+if [[ $host_type != $image_type ]]; then 
    echo "Image type does not match OS type, skip !" 
    exit 0
 fi

@@ -56,7 +56,7 @@ test:
 	   -v /etc/centos-release:/etc/centos-release:ro \
 	   -v /usr/src:/usr/src:ro \
 	   -v /lib/modules:/lib/modules:rw \
-	   -v /usr/local/bin:/usr/local/bin:rw \
+	   -v /usr/local/bin:/usr-local-bin:rw \
 	   -v /etc/modules-load.d:/etc/modules-load.d:rw \
 	   -e LB_DROP=yes \
 	   -it --entrypoint $(ENTRY) \
