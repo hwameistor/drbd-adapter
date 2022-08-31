@@ -39,7 +39,7 @@ cleanup:
 	docker volume rm pkgs || true
 	rmmod drbd_transport_tcp || true
 	rmmod drbd || true
-	rm -vf /etc/modules-load.d/hwameistor.drbd.conf
+	rm -vf /etc/modules-load.d/drbd.conf
 	rm -vfr /lib/modules/$(KVER)/extra/drbd/
 	depmod -a
 	rm -vf /usr/local/bin/drbd*
@@ -64,6 +64,8 @@ test:
 
 push:
 	for i in shipper rhel7 rhel8 bionic focal jammy; do \
-		docker tag drbd9-$$i:v$(DRBD_VER) daocloud.io/daocloud/drbd9-$$i:v$(DRBD_VER); \
-		docker push daocloud.io/daocloud/drbd9-$$i:v$(DRBD_VER); \
+		for j in ghcr.io/alexzhc ghcr.io/hwameistor daocloud.io/daocloud; do \
+			docker tag drbd9-$$i:v$(DRBD_VER) $$j/drbd9-$$i:v$(DRBD_VER); \
+			docker push $$j/drbd9-$$i:v$(DRBD_VER); \
+		done \
 	done
