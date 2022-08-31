@@ -1,3 +1,5 @@
+name: Release Shipper Image
+
 on:
   push:
     branches: [ "main" ]
