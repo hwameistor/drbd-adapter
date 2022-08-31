@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   drbd-adapter:
   - apiVersion: v2
+    appVersion: 0.1.2
+    created: "2022-08-31T15:44:58.550115643Z"
+    description: A Helm chart for drbd-adapter
+    digest: a812c25f002990cc2993795bec881b9829a34d75cf43b14611cca3a9974a5b99
+    name: drbd-adapter
+    type: application
+    urls:
+    - https://github.com/hwameistor/drbd-adapter/releases/download/0.1.2/drbd-adapter-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
     appVersion: 0.1.1
     created: "2022-08-31T15:35:08.827610117Z"
     description: A Helm chart for drbd-adapter
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://github.com/hwameistor/drbd-adapter/releases/download/0.1.0/drbd-adapter-0.1.0.tgz
     version: 0.1.0
-generated: "2022-08-31T15:35:08.827629317Z"
+generated: "2022-08-31T15:44:58.550130443Z"
