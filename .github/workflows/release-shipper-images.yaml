@@ -2,11 +2,11 @@ on:
   push:
     branches: [ "main" ]
     paths:
-    - 'docker/*'
+    - 'docker-shipper/*'
   pull_request:
     branches: [ "main" ]
     paths:
-    - 'docker/*'
+    - 'docker-shipper/*'
 jobs:
 
   build:

@@ -7,11 +7,11 @@ IMG ?= shipper rhel7 rhel8 bionic focal jammy
 REG ?= daocloud.io/daocloud
 
 drbd9:
-	 cd drbd9-docker && \
+	 cd docker-drbd9 && \
 	 ./build.sh $(DRBD_VER)
 
 compiler-centos7:
-	cd docker && \
+	cd docker-shipper && \
 	docker build . -f Dockerfile.compiler.centos7 \
 		--build-arg HTTP_PROXY=${http_proxy} \
 		--build-arg HTTPS_PROXY=${https_proxy} \
@@ -20,7 +20,7 @@ compiler-centos7:
 		-t drbd9-compiler-centos7:v$(DRBD_VER)
 
 compiler-centos8:
-	cd docker && \
+	cd docker-shipper && \
 	docker build . -f Dockerfile.compiler.centos8 \
 		--build-arg HTTP_PROXY=${http_proxy} \
 		--build-arg HTTPS_PROXY=${https_proxy} \
@@ -29,7 +29,7 @@ compiler-centos8:
 		-t drbd9-compiler-centos8:v$(DRBD_VER)
 
 shipper:
-	cd docker && \
+	cd docker-shipper && \
 	docker build . -f Dockerfile.shipper \
 		--build-arg HTTP_PROXY=${http_proxy} \
 		--build-arg HTTPS_PROXY=${https_proxy} \
