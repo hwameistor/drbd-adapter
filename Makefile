@@ -1,12 +1,12 @@
-DRBD_VER := 9.1.8
-DRBD_UTILS_VER := 9.21.4
+DRBD_VER ?= 9.1.8
+DRBD_UTILS_VER ?= 9.21.4
 KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
+REG ?= daocloud.io/daocloud
 
 drbd9:
-	 cd drbd9-docker && \
-	./build.sh $(DRBD_VER)
+	 cd drbd9-docker && ./build.sh $(DRBD_VER)
 
 compiler-centos7:
 	docker build . -f Dockerfile.compiler.centos7 \
@@ -32,8 +32,6 @@ shipper:
 		--build-arg DRBD_VER=$(DRBD_VER) \
 		--build-arg DRBD_UTILS_VER=$(DRBD_UTILS_VER) \
 		-t drbd9-shipper:v$(DRBD_VER)
-
-all: drbd9 compiler-centos7 compiler-centos8 shipper
 
 cleanup:
 	docker volume rm pkgs || true
@@ -64,8 +62,10 @@ test:
 
 push:
 	for i in shipper rhel7 rhel8 bionic focal jammy; do \
-		for j in ghcr.io/alexzhc ghcr.io/hwameistor daocloud.io/daocloud; do \
+		for j in $(REG); do \
 			docker tag drbd9-$$i:v$(DRBD_VER) $$j/drbd9-$$i:v$(DRBD_VER); \
 			docker push $$j/drbd9-$$i:v$(DRBD_VER); \
 		done \
 	done
+
+all: drbd9 compiler-centos7 compiler-centos8 shipper push
