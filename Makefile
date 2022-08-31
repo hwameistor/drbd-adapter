@@ -3,12 +3,15 @@ DRBD_UTILS_VER ?= 9.21.4
 KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
+IMG ?= shipper rhel7 rhel8 bionic focal jammy
 REG ?= daocloud.io/daocloud
 
 drbd9:
-	 cd drbd9-docker && ./build.sh $(DRBD_VER)
+	 cd drbd9-docker && \
+	 ./build.sh $(DRBD_VER)
 
 compiler-centos7:
+	cd docker && \
 	docker build . -f Dockerfile.compiler.centos7 \
 		--build-arg HTTP_PROXY=${http_proxy} \
 		--build-arg HTTPS_PROXY=${https_proxy} \
@@ -17,6 +20,7 @@ compiler-centos7:
 		-t drbd9-compiler-centos7:v$(DRBD_VER)
 
 compiler-centos8:
+	cd docker && \
 	docker build . -f Dockerfile.compiler.centos8 \
 		--build-arg HTTP_PROXY=${http_proxy} \
 		--build-arg HTTPS_PROXY=${https_proxy} \
@@ -25,6 +29,7 @@ compiler-centos8:
 		-t drbd9-compiler-centos8:v$(DRBD_VER)
 
 shipper:
+	cd docker && \
 	docker build . -f Dockerfile.shipper \
 		--build-arg HTTP_PROXY=${http_proxy} \
 		--build-arg HTTPS_PROXY=${https_proxy} \
@@ -61,7 +66,7 @@ test:
 	   drbd9-$(DIST):v$(DRBD_VER)
 
 push:
-	for i in shipper rhel7 rhel8 bionic focal jammy; do \
+	for i in $(IMG) ; do \
 		for j in $(REG); do \
 			docker tag drbd9-$$i:v$(DRBD_VER) $$j/drbd9-$$i:v$(DRBD_VER); \
 			docker push $$j/drbd9-$$i:v$(DRBD_VER); \

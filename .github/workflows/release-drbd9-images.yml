@@ -1,9 +1,12 @@
 on:
   push:
     branches: [ "main" ]
+    paths:
+    - 'drbd9/**'
   pull_request:
     branches: [ "main" ]
-
+    paths:
+    - 'drbd9/**'
 jobs:
 
   build:
@@ -21,19 +24,10 @@ jobs:
     - name: Build official DRBD9 images
       run: make drbd9
 
-    - name: Compiling kmod-drbd for CentOS 7 stock kernels
-      run: make compiler-centos7
-
-    - name: Compiling kmod-drbd for CentOS 8 stock kernels
-      run: make compiler-centos8
-
-    - name: Build shipper image which packs kmod-drbd and static drbd-utils
-      run: make shipper
-
     - name: Login registry
       run: |
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push images
       run: |
-        make push REG=$( echo ghcr.io/$(echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
+        make push REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' ) IMG="rhel7 rhel8 bionic focal jammy"
