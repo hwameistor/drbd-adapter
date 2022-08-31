@@ -1,4 +1,4 @@
-# DRBD-9 Adapter
+# DRBD Adapter
 
 ## Overview
 
@@ -9,7 +9,7 @@
 3. Use pre-built kernel modules for stock RHEL/CentOS hosts;
 4. Use dynamically built kernel modules for un-stock RHEL/CentOS hosts and Ubuntu hosts.
 
-## Official Reference
+## Official DRBD Docker Images
 
 LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
@@ -21,6 +21,7 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 * RHEL/CentOS 7
 * RHEL/CentOS 7
+* Kylin
 * Ubuntu 18 Bionic
 * Ubuntu 20 Focal
 * Ubuntu 22 Jammy
