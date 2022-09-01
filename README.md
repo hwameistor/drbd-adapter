@@ -21,7 +21,7 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 * RHEL/CentOS 7
 * RHEL/CentOS 7
-* Kylin
+* Kylin V10
 * Ubuntu 18 Bionic
 * Ubuntu 20 Focal
 * Ubuntu 22 Jammy
@@ -45,7 +45,7 @@ $ yum install -y kernel-devel-$(uname -r)
 $ apt-get install -y linux-headers-$(uname -r)
 ```
 
-### Yaml
+### Helm Charts
 Deploy the below `DaemonSet`. It will bring up a pod on each kubernetes worker node to install DRBD modules and tools:
 
 ```
@@ -55,5 +55,5 @@ $ helm repo update hwameistor
 
 $ helm pull hwameistor/drbd-adapter --untar
 
-$ helm install drbd-adapter ./drbd-adapter
+$ helm install drbd-adapter ./drbd-adapter -n hwameistor --create-namespace
 ```
