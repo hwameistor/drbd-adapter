@@ -31,3 +31,23 @@ jobs:
           config: helm/.cr/config.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Run yq
+        uses: mikefarah/yq@master
+        run: |
+          sleep 300
+          curl https://raw.githubusercontent.com/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )/hwameistor/gh-pages/index.yaml > hms.yaml
+          curl https://raw.githubusercontent.com/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )/drbd-adapter/gh-pages/index.yaml > dra.yaml
+          yq eval-all '. as $item ireduce ({}; . * $item)' hms.yaml dra.yaml > index.yaml
+          cat index.yaml
+      - name: Pushes test file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          source_file: 'index.yaml'
+          destination_repo: 'hwameistor/hwameistor'
+          destination_folder: '/'
+          destination_branch: gh-pages
+          user_email: 'alexzhc@hotmail.com'
+          user_name: 'alex'
+          commit_message: 'Update chart index with the latest drbd-adapter release'
