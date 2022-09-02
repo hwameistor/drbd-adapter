@@ -1,15 +1,27 @@
-# Default values for drbd-adapter.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 registry: ghcr.io/hwameistor
+imagePullPolicy: IfNotPresent # For testing, set 'Always'
 
 drbdVersion: v9.1.8
+drbdReactorVersion: v0.8.0
+# Here are all supported distros, remove the ones that are not in your cluster
 
+distros: []  # Must be set as "[]" (empty array) to enable AutoDetect"
+# - rhel7
+# - rhel8
+# - bionic
+# - focal
+# - jammy
+
+# by default drop binary files to the host
+drop: "yes"
+
+# Aovid master nodes
 affinity: 
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
       - matchExpressions:
         - key: node-role.kubernetes.io/master
+          operator: DoesNotExist
+        - key: node-role.kubernetes.io/control-plane
           operator: DoesNotExist

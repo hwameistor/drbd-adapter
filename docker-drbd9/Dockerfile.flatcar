@@ -6,3 +6,5 @@ COPY /drbd.tar.gz /
 COPY /entry.sh /
 RUN chmod +x /entry.sh
 ENTRYPOINT /entry.sh
+
+ENV DRBD_VERSION 9.1.8

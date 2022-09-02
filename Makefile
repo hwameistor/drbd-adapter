@@ -4,7 +4,7 @@ KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
 IMG ?= shipper rhel7 rhel8 bionic focal jammy
-REG ?= ghcr.io/hwameistor
+REG ?= daocloud.io/daocloud # Test Registry
 
 drbd9:
 	 cd docker-drbd9 && \
@@ -44,10 +44,11 @@ cleanup:
 	rmmod drbd || true
 	rm -vf /etc/modules-load.d/drbd.conf
 	rm -vfr /lib/modules/$(KVER)/extra/drbd/
+	rm -vfr /lib/modules/${KVER}/updates/dkms/drbd/
 	depmod -a
 	rm -vf /usr/local/bin/drbd*
 
-test:
+test-docker:
 	docker volume rm pkgs || true
 	docker run --rm \
 	    -v pkgs:/pkgs \
@@ -64,6 +65,15 @@ test:
 	   -e LB_DROP=yes \
 	   -it --entrypoint $(ENTRY) \
 	   drbd9-$(DIST):v$(DRBD_VER)
+
+test:
+	helm install drbd-adapter helm/drbd-adapter \
+		-n hwameistor --create-namespace \
+		-f helm/drbd-adapter/values.yaml \
+		--set imagePullPolicy=Always \
+		--set registry=daocloud.io/daocloud
+
+
 
 push:
 	for i in $(IMG) ; do \
