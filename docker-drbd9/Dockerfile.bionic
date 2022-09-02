@@ -20,3 +20,5 @@ RUN ln -vs /usr/bin/python2 /usr/bin/python3
 RUN ln -vs /usr/bin/python2 /usr/bin/python3.6
 
 ENTRYPOINT /entry.sh
+
+ENV DRBD_VERSION 9.1.8

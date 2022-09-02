@@ -15,25 +15,28 @@ spec:
     spec:
       initContainers:
       - name: shipper
-        image: {{ .Values.registry}}/drbd9-shipper:{{ .Values.drbdVersion}}
-        imagePullPolicy: Always
+        image: {{ $.Values.registry }}/drbd9-shipper:{{ $.Values.drbdVersion }}
+        imagePullPolicy: {{ $.Values.imagePullPolicy }}
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
-
-      - name: rhel7
-        image: {{ .Values.registry}}/drbd9-rhel7:{{ .Values.drbdVersion}}
-        imagePullPolicy: Always
+      {{- range $.Values.distros }}
+      {{ $dist := . }}
+      - name: {{ $dist }}
+        image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $.Values.drbdVersion }}
+        imagePullPolicy: {{ $.Values.imagePullPolicy }}
         command: [ /pkgs/entrypoint.adapter.sh ]
         securityContext:
           privileged: true
         env:
         - name: LB_DROP
-          value: 'yes'
+          value: {{ $.Values.drop | quote }}
         volumeMounts:
+        {{- if regexMatch "rhel[78]" $dist }}
         - name: centos-release
           mountPath: /etc/centos-release
           readOnly: true
+        {{- end }}
         - name: pkgs
           mountPath: /pkgs
         - name: os-release
@@ -48,118 +51,16 @@ spec:
           mountPath: /usr-local-bin
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
-
-      - name: rhel8
-        image: {{ .Values.registry}}/drbd9-rhel8:{{ .Values.drbdVersion}}
-        imagePullPolicy: Always
-        command: [ /pkgs/entrypoint.adapter.sh ]
-        securityContext:
-          privileged: true
-        env:
-        - name: LB_DROP
-          value: 'yes'
-        volumeMounts:
-        - name: centos-release
-          mountPath: /etc/centos-release
-          readOnly: true
-        - name: pkgs
-          mountPath: /pkgs
-        - name: os-release
-          mountPath: /etc/host-release
-          readOnly: true
-        - name: usr-src
-          mountPath: /usr/src
-          readOnly: true
-        - name: lib-modules
-          mountPath: /lib/modules
-        - name: usr-local-bin
-          mountPath: /usr-local-bin
-        - name: etc-modules-load
-          mountPath: /etc/modules-load.d
-
-      - name: bionic
-        image: {{ .Values.registry}}/drbd9-bionic:{{ .Values.drbdVersion}}
-        imagePullPolicy: Always
-        command: [ /pkgs/entrypoint.adapter.sh ]
-        securityContext:
-          privileged: true
-        env:
-        - name: LB_DROP
-          value: 'yes'
-        volumeMounts:
-        - name: pkgs
-          mountPath: /pkgs
-        - name: os-release
-          mountPath: /etc/host-release
-          readOnly: true
-        - name: usr-src
-          mountPath: /usr/src
-          readOnly: true
-        - name: lib-modules
-          mountPath: /lib/modules
-        - name: usr-local-bin
-          mountPath: /usr-local-bin
-        - name: etc-modules-load
-          mountPath: /etc/modules-load.d
-
-      - name: focal
-        image: {{ .Values.registry}}/drbd9-focal:{{ .Values.drbdVersion}}
-        imagePullPolicy: Always
-        command: [ /pkgs/entrypoint.adapter.sh ]
-        securityContext:
-          privileged: true
-        env:
-        - name: LB_DROP
-          value: 'yes'
-        volumeMounts:
-        - name: pkgs
-          mountPath: /pkgs
-        - name: os-release
-          mountPath: /etc/host-release
-          readOnly: true
-        - name: usr-src
-          mountPath: /usr/src
-          readOnly: true
-        - name: lib-modules
-          mountPath: /lib/modules
-        - name: usr-local-bin
-          mountPath: /usr-local-bin
-        - name: etc-modules-load
-          mountPath: /etc/modules-load.d
-
-      - name: jammy
-        image: {{ .Values.registry}}/drbd9-jammy:{{ .Values.drbdVersion}}
-        imagePullPolicy: Always
-        command: [ /pkgs/entrypoint.adapter.sh ]
-        securityContext:
-          privileged: true
-        env:
-        - name: LB_DROP
-          value: 'yes'
-        volumeMounts:
-        - name: pkgs
-          mountPath: /pkgs
-        - name: os-release
-          mountPath: /etc/host-release
-          readOnly: true
-        - name: usr-src
-          mountPath: /usr/src
-          readOnly: true
-        - name: lib-modules
-          mountPath: /lib/modules
-        - name: usr-local-bin
-          mountPath: /usr-local-bin
-        - name: etc-modules-load
-          mountPath: /etc/modules-load.d
-
+        {{- end }}
       containers:
       - name: monitor
-        image: quay.io/piraeusdatastore/drbd-reactor
-        imagePullPolicy: IfNotPresent
+        # Source registry: quay.io/piraeusdatastore/drbd-reactor
+        image: {{ .Values.registry}}/drbd-reactor:{{ .Values.drbdReactorVersion}}
+        imagePullPolicy: {{ .Values.imagePullPolicy}}
         command:
-        - tail
-        - -f
-        - /dev/null
+        - /usr/sbin/drbd-reactor
+        - -c
+        - /pkgs/drbd-reactor.toml
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
@@ -187,7 +88,6 @@ spec:
       - name: etc-modules-load
         hostPath:
           path: /etc/modules-load.d
-
       affinity:
         nodeAffinity:
-		 {{- toYaml .Values.affinity.nodeAffinity | nindent 10 }}
+		    {{- toYaml $.Values.affinity.nodeAffinity | nindent 10 }}
