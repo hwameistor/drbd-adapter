@@ -31,8 +31,9 @@ jobs:
           config: helm/.cr/config.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Run yq
+      - name: Set up yq
         uses: mikefarah/yq@master
+      - name: Merge index.yaml
         run: |
           sleep 300
           curl https://raw.githubusercontent.com/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )/hwameistor/gh-pages/index.yaml > hms.yaml
