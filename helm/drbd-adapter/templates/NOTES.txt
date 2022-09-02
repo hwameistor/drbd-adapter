@@ -1,7 +1,17 @@
 Thank you for installing {{ .Chart.Name }}.
 
-This is a tool image to help install drbd kernel modules and drbd utils.
+This is a tool image to help install DRBD kernel modules and DRBD utils.
 
-For now, we support rhel7, rhel8, rhel9, ubuntu.
+For now, it supports the following OS distros: 
 
-Read more info or want support more linux distributions, you can visit https://github.com/hwameistor/drbd-adapter.
+    RHEL/CentOS 7
+    RHEL/CentOS 8
+    Ubuntu 18 Bionic
+    Ubuntu 20 Focal
+    Ubuntu 22 Jammy
+
+OS distros are by default auto-detected as "distroAutoDetect: true" is set in values.yaml
+
+If you want to manually specify OS distros, set "distroAutoDetect: false" and add to "distros: []" in values.yaml
+
+Read more info at https://github.com/hwameistor/drbd-adapter.

@@ -20,8 +20,28 @@ spec:
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
-      {{- range $.Values.distros }}
-      {{ $dist := . }}
+      {{- $distros := list }}
+      {{- if $.Values.distroAutoDetect }}
+        {{- range $index, $node := (lookup "v1" "Node" "" "").items }}
+          {{- $osImage := lower $node.status.nodeInfo.osImage }}
+          {{- with . -}}
+            {{- if regexMatch "centos .*7" $osImage }}
+              {{- $distros = append $distros "rhel7" }}
+            {{- else if regexMatch "centos .*8" $osImage }}
+              {{- $distros = append $distros "rhel8" }}
+            {{- else if regexMatch "ubuntu .*18" $osImage }}
+              {{- $distros = append $distros "bionic" }}
+            {{- else if regexMatch "ubuntu .*20" $osImage }}
+              {{- $distros = append $distros "focal" }}
+            {{- else if regexMatch "ubuntu .*22" $osImage }}
+              {{- $distros = append $distros "jammy" }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- else }}
+        {{- $distros = $.Values.distros -}}
+      {{- end }}
+      {{- range $index, $dist := $distros | uniq }}
       - name: {{ $dist }}
         image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $.Values.drbdVersion }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}

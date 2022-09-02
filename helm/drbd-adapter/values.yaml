@@ -4,12 +4,14 @@ imagePullPolicy: IfNotPresent # For testing, set 'Always'
 drbdVersion: v9.1.8
 drbdReactorVersion: v0.8.0
 # Here are all supported distros, remove the ones that are not in your cluster
-distros:
-  - rhel7
-  - rhel8
-  - bionic
-  - focal
-  - jammy
+
+distroAutoDetect: true
+distros: # will be ignored if "distroAutoDetect" is set to true
+  # - rhel7
+  # - rhel8
+  # - bionic
+  # - focal
+  # - jammy
 
 # by default drop binary files to the host
 drop: "yes"
