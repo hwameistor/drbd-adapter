@@ -17,7 +17,7 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 * x86_64
 
-## OS Support
+## OS Distro Support
 
 * RHEL/CentOS 7
 * RHEL/CentOS 7
@@ -45,7 +45,7 @@ $ yum install -y kernel-devel-$(uname -r)
 $ apt-get install -y linux-headers-$(uname -r)
 ```
 
-### Helm Charts
+### Deploy by Helm Charts
 Deploy the below `DaemonSet`. It will bring up a pod on each kubernetes worker node to install DRBD modules and tools:
 
 ```
@@ -57,3 +57,22 @@ $ helm pull hwameistor/drbd-adapter --untar
 
 $ helm install drbd-adapter ./drbd-adapter -n hwameistor --create-namespace
 ```
+
+### Set OS Distros
+
+By default, OS distros are auto-detected by helm "lookup" function.
+
+However it can be overridden by adding values to the array "distros: []" in values.yaml.
+
+For example:
+
+```yaml
+distros: 
+- rhel7
+- rhel8
+- bionic
+#- focal
+#- jammy
+```
+
+**Distros that are not supported will be ignored.**

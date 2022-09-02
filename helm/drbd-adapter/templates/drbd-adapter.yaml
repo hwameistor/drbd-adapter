@@ -20,8 +20,10 @@ spec:
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
-      {{- $distros := list }}
-      {{- if $.Values.distroAutoDetect }}
+      {{- $distros := $.Values.distros }}
+      {{- if $distros -}}
+      {{ else }}
+        {{- $distros = append $distros "flatcar" }}
         {{- range $index, $node := (lookup "v1" "Node" "" "").items }}
           {{- $osImage := lower $node.status.nodeInfo.osImage }}
           {{- with . -}}
@@ -38,10 +40,9 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
-      {{- else }}
-        {{- $distros = $.Values.distros -}}
       {{- end }}
       {{- range $index, $dist := $distros | uniq }}
+      {{- if regexMatch "^(rhel[78]|bionic|focal|jammy)$" $dist }}
       - name: {{ $dist }}
         image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $.Values.drbdVersion }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
@@ -52,7 +53,7 @@ spec:
         - name: LB_DROP
           value: {{ $.Values.drop | quote }}
         volumeMounts:
-        {{- if regexMatch "rhel[78]" $dist }}
+        {{- if regexMatch "^rhel[78]$" $dist }}
         - name: centos-release
           mountPath: /etc/centos-release
           readOnly: true
@@ -71,6 +72,7 @@ spec:
           mountPath: /usr-local-bin
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
+        {{- end }}
         {{- end }}
       containers:
       - name: monitor
