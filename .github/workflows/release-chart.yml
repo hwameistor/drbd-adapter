@@ -48,7 +48,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: 'index.yaml'
-          destination_repo: '${GIT_ORG}/hwameistor'
+          destination_repo: "${GIT_ORG}/hwameistor"
           destination_folder: '/'
           destination_branch: gh-pages
           user_email: 'alexzhc@hotmail.com'
