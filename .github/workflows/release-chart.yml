@@ -38,19 +38,18 @@ jobs:
       - name: Merge index.yaml
         run: |
           sleep 60
-          curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > hms.yaml
-          curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > dra.yaml
-          yq eval-all '. as $item ireduce ({}; . * $item)' hms.yaml dra.yaml > index.yaml
+          mkdir -p /gh
+          curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > /gh/hms.yaml
+          curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > /gh/dra.yaml
+          yq eval-all '. as $item ireduce ({}; . * $item)' /gh/hms.yaml /gh/dra.yaml > /gh/index.yaml
           cat index.yaml
-      - name: Pushes test file
-        uses: dmnemec/copy_file_to_another_repo_action@main
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          SSH_DEPLOY_KEY: ${{ secrets.GH_PAGES_DEPLOY }}
         with:
-          source_file: 'index.yaml'
-          destination_repo: "${{env.GIT_ORG}}/hwameistor"
-          destination_folder: '/'
-          destination_branch: gh-pages
-          user_email: 'alexzhc@hotmail.com'
-          user_name: 'alexzhc'
-          commit_message: 'Update chart index with the latest drbd-adapter release'
+          source-directory: gh
+          destination-github-username: ${{GIT_ORG}}
+          destination-repository-name: hwameistor
+          user-email: alexzhc@hotmail.com
+          target-branch: gh
