@@ -52,5 +52,5 @@ jobs:
           destination_folder: '/'
           destination_branch: gh-pages
           user_email: 'alexzhc@hotmail.com'
-          user_name: 'alex'
+          user_name: 'alexzhc'
           commit_message: 'Update chart index with the latest drbd-adapter release'
