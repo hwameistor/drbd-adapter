@@ -1,4 +1,4 @@
-DRBD_VER ?= 9.1.8
+DRBD_VER ?= 9.1.10
 DRBD_UTILS_VER ?= 9.21.4
 KVER := $(shell uname -r)
 DIST ?= rhel7

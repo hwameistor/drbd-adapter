@@ -32,13 +32,15 @@ elif [[ $RUNNING_DRBD_VERSION == $DRBD_VERSION ]] || \
      [[ $( printf "$RUNNING_DRBD_VERSION\n$DRBD_VERSION" | sort -V | tail -1 ) != $DRBD_VERSION ]]
 then
    echo "The loaded DRBD module version is already $RUNNING_DRBD_VERSION"
-else
+else 
    echo "The loaded DRBD module version $RUNNING_DRBD_VERSION is lower than $DRBD_VERSION"
-   for i in drbd_transport_tcp drbd; do
-      if lsmod | grep -w $i; then
-         rmmod $i || true
-      fi
-   done
+   if [[ $LB_UPGRADE == 'yes' ]]; then
+      for i in drbd_transport_tcp drbd; do
+         if lsmod | grep -w $i; then
+            rmmod $i || true
+         fi
+      done
+   fi
 fi
 
 ## Main Logic

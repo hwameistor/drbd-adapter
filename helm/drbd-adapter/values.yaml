@@ -1,7 +1,7 @@
 registry: ghcr.io/hwameistor
 imagePullPolicy: IfNotPresent # For testing, set 'Always'
 
-drbdVersion: v9.1.8
+drbdVersion: v9.1.10
 drbdReactorVersion: v0.8.0
 # Here are all supported distros, remove the ones that are not in your cluster
 
@@ -14,6 +14,9 @@ distros: []  # Must be set as "[]" (empty array) to enable AutoDetect"
 
 # by default drop binary files to the host
 drop: "yes"
+
+# by default no upgrade
+upgrade: "no"
 
 # Aovid master nodes
 affinity: 

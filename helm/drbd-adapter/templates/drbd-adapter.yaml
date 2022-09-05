@@ -52,6 +52,8 @@ spec:
         env:
         - name: LB_DROP
           value: {{ $.Values.drop | quote }}
+        - name: LB_UPGRADE
+          value: {{ $.Values.upgrade | quote }}
         volumeMounts:
         {{- if regexMatch "^rhel[78]$" $dist }}
         - name: centos-release
