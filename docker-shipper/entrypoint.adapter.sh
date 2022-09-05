@@ -75,8 +75,8 @@ if [[ $LB_DROP == yes ]]; then
    cp -vf /pkgs/drbd-utils/* /usr-local/bin/
    cat /pkgs/drbd.conf > /etc/drbd.conf
    cp -vf /pkgs/global_common.conf /etc/drbd.d/
-   mkdir -vp /usr-local/etc /usr-local/var/lib
-   ln -svf /etc/drbd.conf /usr-local/etc/drbd.conf
-   ln -svf /etc/drbd.d /usr-local/etc/drbd.d
-   ln -svf /var/lib/drbd /usr-local/var/lib/
+   for i in etc var; do 
+      mv -vf /usr-local/$i /usr-local/$i.bak
+      ln -svf /$i /usr-local/$i
+   done 
 fi
