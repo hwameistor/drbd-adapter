@@ -49,7 +49,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.GH_PAGES_DEPLOY }}
         with:
           source-directory: gh
-          destination-github-username: ${{GIT_ORG}}
+          destination-github-username: ${{env.GIT_ORG}}
           destination-repository-name: hwameistor
           user-email: alexzhc@hotmail.com
           target-branch: gh
