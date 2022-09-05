@@ -42,7 +42,7 @@ jobs:
           curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > /tmp/gh/hms.yaml
           curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > /tmp/gh/dra.yaml
           yq eval-all '. as $item ireduce ({}; . * $item)' /tmp/gh/hms.yaml /tmp/gh/dra.yaml > /tmp/gh/index.yaml
-          cat index.yaml
+          cat /tmp/gh/index.yaml
       - name: Pushes to hwameistor main repo
         uses: cpina/github-action-push-to-another-repository@main
         env:
