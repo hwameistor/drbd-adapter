@@ -73,8 +73,6 @@ test:
 		--set imagePullPolicy=Always \
 		--set registry=daocloud.io/daocloud
 
-
-
 push:
 	for i in $(IMG) ; do \
 		for j in $(REG); do \

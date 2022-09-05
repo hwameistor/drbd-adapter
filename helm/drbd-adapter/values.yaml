@@ -15,7 +15,7 @@ distros: []  # Must be set as "[]" (empty array) to enable AutoDetect"
 # by default drop binary files to the host
 drop: "yes"
 
-# by default no upgrade
+# by default upgrade if possible
 upgrade: "no"
 
 # Aovid master nodes
