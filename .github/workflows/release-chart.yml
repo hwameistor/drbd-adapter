@@ -38,18 +38,18 @@ jobs:
       - name: Merge index.yaml
         run: |
           sleep 60
-          mkdir -p /gh
-          curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > /gh/hms.yaml
-          curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > /gh/dra.yaml
-          yq eval-all '. as $item ireduce ({}; . * $item)' /gh/hms.yaml /gh/dra.yaml > /gh/index.yaml
+          mkdir -p /tmp/gh
+          curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > /tmp/gh/hms.yaml
+          curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > /tmp/gh/dra.yaml
+          yq eval-all '. as $item ireduce ({}; . * $item)' /tmp/gh/hms.yaml gh/dra.yaml > /tmp/gh/index.yaml
           cat index.yaml
-      - name: Pushes to another repository
+      - name: Pushes to ${{ env.GIT_ORG }} main repo
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.GH_PAGES_DEPLOY }}
         with:
-          source-directory: gh
-          destination-github-username: ${{env.GIT_ORG}}
+          source-directory: /tmp/gh
+          destination-github-username: ${{ env.GIT_ORG }}
           destination-repository-name: hwameistor
           user-email: alexzhc@hotmail.com
-          target-branch: gh
+          target-branch: gh-pages
