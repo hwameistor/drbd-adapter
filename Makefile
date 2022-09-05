@@ -1,5 +1,5 @@
-DRBD_VER ?= 9.1.10
-DRBD_UTILS_VER ?= 9.21.4
+DRBD_VER ?= 9.0.22
+DRBD_UTILS_VER ?= 9.12.2
 KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
