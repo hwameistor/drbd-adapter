@@ -23,11 +23,13 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: v3.7.1
+      - name: Set env
+        run: echo "GIT_ORG=$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )" >> $GITHUB_ENV
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.3.0
         with:
           charts_dir: helm
-          charts_repo_url: https://hwameistor.io/drbd-adapter
+          charts_repo_url: https://${GIT_ORG}.github.io/drbd-adapter
           config: helm/.cr/config.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
@@ -35,20 +37,19 @@ jobs:
         uses: mikefarah/yq@master
       - name: Merge index.yaml
         run: |
-          sleep 300
-          curl https://raw.githubusercontent.com/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )/hwameistor/gh-pages/index.yaml > hms.yaml
-          curl https://raw.githubusercontent.com/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )/drbd-adapter/gh-pages/index.yaml > dra.yaml
-          yq eval-all '. as $item ireduce ({}; . * $item)' hms.yaml dra.yaml > index.yaml
-          cat index.yaml
-      - name: Pushes test file
-        uses: dmnemec/copy_file_to_another_repo_action@main
+          sleep 60
+          mkdir -vp /tmp/gh
+          curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > /tmp/gh/hms.yaml
+          curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > /tmp/gh/dra.yaml
+          yq eval-all '. as $item ireduce ({}; . * $item)' /tmp/gh/hms.yaml /tmp/gh/dra.yaml > /tmp/gh/index.yaml
+          cat /tmp/gh/index.yaml
+      - name: Pushes to hwameistor main repo
+        uses: cpina/github-action-push-to-another-repository@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+          SSH_DEPLOY_KEY: ${{ secrets.GH_PAGES_DEPLOY }}
         with:
-          source_file: 'index.yaml'
-          destination_repo: 'hwameistor/hwameistor'
-          destination_folder: '/'
-          destination_branch: gh-pages
-          user_email: 'alexzhc@hotmail.com'
-          user_name: 'alex'
-          commit_message: 'Update chart index with the latest drbd-adapter release'
+          source-directory: /tmp/gh
+          destination-github-username: ${{ env.GIT_ORG }}
+          destination-repository-name: hwameistor
+          user-email: alexzhc@hotmail.com
+          target-branch: gh-pages

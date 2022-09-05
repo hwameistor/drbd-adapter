@@ -1,4 +1,4 @@
-DRBD_VER ?= 9.1.8
+DRBD_VER ?= 9.1.10
 DRBD_UTILS_VER ?= 9.21.4
 KVER := $(shell uname -r)
 DIST ?= rhel7
@@ -72,8 +72,6 @@ test:
 		-f helm/drbd-adapter/values.yaml \
 		--set imagePullPolicy=Always \
 		--set registry=daocloud.io/daocloud
-
-
 
 push:
 	for i in $(IMG) ; do \

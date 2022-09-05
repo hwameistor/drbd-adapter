@@ -32,13 +32,15 @@ elif [[ $RUNNING_DRBD_VERSION == $DRBD_VERSION ]] || \
      [[ $( printf "$RUNNING_DRBD_VERSION\n$DRBD_VERSION" | sort -V | tail -1 ) != $DRBD_VERSION ]]
 then
    echo "The loaded DRBD module version is already $RUNNING_DRBD_VERSION"
-else
+else 
    echo "The loaded DRBD module version $RUNNING_DRBD_VERSION is lower than $DRBD_VERSION"
-   for i in drbd_transport_tcp drbd; do
-      if lsmod | grep -w $i; then
-         rmmod $i || true
-      fi
-   done
+   if [[ $LB_UPGRADE == 'yes' ]] || [[ $RUNNING_DRBD_VERSION =~ ^8 ]]; then
+      for i in drbd_transport_tcp drbd; do
+         if lsmod | grep -w $i; then
+            rmmod $i || true
+         fi
+      done
+   fi
 fi
 
 ## Main Logic
@@ -69,6 +71,12 @@ if [[ $LB_DROP == yes ]]; then
    # onboot load modules 
    cp -vf /pkgs/drbd.modules-load.conf /etc/modules-load.d/drbd.conf
 
-   # drop drbd utils
-   cp -vf /pkgs/drbd-utils/* /usr-local-bin/
+   # drop drbd utils and set up conf directories
+   cp -vf /pkgs/drbd-utils/* /usr-local/bin/
+   cat /pkgs/drbd.conf > /etc/drbd.conf
+   cp -vf /pkgs/global_common.conf /etc/drbd.d/
+   mkdir -vp /usr-local/etc /usr-local/var/lib
+   ln -svf /etc/drbd.conf /usr-local/etc/drbd.conf
+   ln -svf /etc/drbd.d /usr-local/etc/drbd.d
+   ln -svf /var/lib/drbd /usr-local/var/lib/
 fi

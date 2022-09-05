@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-DRBD_VER=${1:-9.1.8}
+DRBD_VER=${1:-9.1.10}
 
 [ -z "$DRBD_VER" ] && echo "Need a DRBD version !" && exit 1
 

@@ -9,6 +9,10 @@
 3. Use pre-built kernel modules for stock RHEL/CentOS hosts;
 4. Use dynamically built kernel modules for un-stock RHEL/CentOS hosts and Ubuntu hosts.
 
+![flowchart](flowchart.drawio.svg)
+* Yellow: LINBIT's logic
+* Blue: DaoCloud's Logic
+
 ## Official DRBD Docker Images
 
 LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
@@ -60,9 +64,11 @@ $ helm install drbd-adapter ./drbd-adapter -n hwameistor --create-namespace
 
 ### Set OS Distros
 
-By default, OS distros are auto-detected by helm "lookup" function.
+By default, OS distros are auto-detected by helm `lookup` function.
 
-However it can be overridden by adding values to the array "distros: []" in values.yaml.
+However, it can be overridden by adding values to the array `distros: []` in `values.yaml`.
+
+**Distros that are not supported will be ignored.**
 
 For example:
 
@@ -75,4 +81,16 @@ distros:
 #- jammy
 ```
 
-**Distros that are not supported will be ignored.**
+### Post-installation Check
+
+On POD hosts
+
+```console
+$ cat /proc/drbd
+
+$ modinfo drbd
+
+$ lsmod | grep drbd
+
+$ drbdadm --version
+```

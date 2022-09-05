@@ -15,8 +15,6 @@ RUN cd drbd-utils-${DRBD_UTILS_VER} && \
     ./configure \
     --with-prebuiltman \
     --with-drbdmon \
-    --without-83support \
-    --without-84support \
     --without-manual \
     --without-xen \
     --without-heartbeat \
@@ -40,11 +38,7 @@ COPY --from=compiler-centos7 /pkgs/ /files/
 
 COPY --from=compiler-centos8 /pkgs/ /files/
 
-COPY drbd-reactor.toml /files/
-
-COPY drbd.modules-load.conf /files/
-
-COPY entrypoint.adapter.sh /files/
+COPY . /files/
 
 RUN chmod -v +x /files/entrypoint.adapter.sh
 
