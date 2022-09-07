@@ -60,7 +60,7 @@ $ apt-get install -y linux-headers-$(uname -r)
 ### Deploy by Helm Charts
 Deploy the below `DaemonSet`. It will bring up a pod on each kubernetes worker node to install DRBD modules and tools:
 
-```
+```console
 $ helm repo add hwameistor https://hwameistor.io/hwameistor
 
 $ helm repo update hwameistor
@@ -68,6 +68,15 @@ $ helm repo update hwameistor
 $ helm pull hwameistor/drbd-adapter --untar
 
 $ helm install drbd-adapter ./drbd-adapter -n hwameistor --create-namespace
+```
+
+Users in China may use daocloud.io/daocloud mirror to accelerate image pull:
+
+```console
+$ helm install drbd-adapter ./drbd-adapter \
+    -n hwameistor --create-namespace \
+    --set imagePullPolicy=Always \
+    --set registry=daocloud.io/daocloud
 ```
 
 ### Set OS Distros
