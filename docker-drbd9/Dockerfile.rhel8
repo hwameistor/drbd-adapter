@@ -40,7 +40,7 @@ RUN yum install -y /pkgs/*.rpm # !lbbuild
 RUN rm -rf /pkgs
 
 # one can not comment copy
-RUN wget https://pkg.linbit.com/downloads/drbd/9/drbd-${DRBD_VERSION}.tar.gz -O /drbd.tar.gz # !lbbuild
+RUN wget https://pkg.linbit.com/downloads/drbd/"$([[ $DRBD_VERSION =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VERSION}.tar.gz -O /drbd.tar.gz # !lbbuild
 # =lbbuild COPY /drbd.tar.gz /
 
 # these are now the kmod pkgs:

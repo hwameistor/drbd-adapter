@@ -1,7 +1,8 @@
 registry: ghcr.io/hwameistor
 imagePullPolicy: IfNotPresent # For testing, set 'Always'
 
-drbdVersion: v9.1.10
+drbdVersion: v9.0.32-1
+drbdUtilsVersion: v9.12.1
 drbdReactorVersion: v0.8.0
 # Here are all supported distros, remove the ones that are not in your cluster
 

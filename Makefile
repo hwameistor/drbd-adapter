@@ -1,5 +1,6 @@
-DRBD_VER ?= 9.1.10
-DRBD_UTILS_VER ?= 9.21.4
+DRBD_VER ?= 9.0.32-1
+DRBD_UTILS_VER ?= 9.12.1
+DRBD_HEADERS_SHA ?= c757cf357edef67751b8f45a6ea894d287180087
 KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
@@ -36,6 +37,7 @@ shipper:
 		--build-arg FTP_PROXY=${ftp_proxy} \
 		--build-arg DRBD_VER=$(DRBD_VER) \
 		--build-arg DRBD_UTILS_VER=$(DRBD_UTILS_VER) \
+		--build-arg DRBD_HEADERS_SHA=$(DRBD_HEADERS_SHA) \
 		-t drbd9-shipper:v$(DRBD_VER)
 
 cleanup:

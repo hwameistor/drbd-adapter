@@ -21,14 +21,22 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 * x86_64
 
+## DRBD Versions
+
+* DRBD: v9.0.32-1
+* DRBD Utils: v9.12.1
+
 ## OS Distro Support
 
 * RHEL/CentOS 7
-* RHEL/CentOS 7
+* RHEL/CentOS 8
 * Kylin V10
 * Ubuntu 18 Bionic
 * Ubuntu 20 Focal
-* Ubuntu 22 Jammy
+
+### Not Supported, but for test only
+
+* Ubuntu 22 Jammy (will install DRBD v9.1.10 )
 
 ## Kubernetes Version
 
@@ -52,7 +60,7 @@ $ apt-get install -y linux-headers-$(uname -r)
 ### Deploy by Helm Charts
 Deploy the below `DaemonSet`. It will bring up a pod on each kubernetes worker node to install DRBD modules and tools:
 
-```
+```console
 $ helm repo add hwameistor https://hwameistor.io/hwameistor
 
 $ helm repo update hwameistor
@@ -60,6 +68,15 @@ $ helm repo update hwameistor
 $ helm pull hwameistor/drbd-adapter --untar
 
 $ helm install drbd-adapter ./drbd-adapter -n hwameistor --create-namespace
+```
+
+Users in China may use daocloud.io/daocloud mirror to accelerate image pull:
+
+```console
+$ helm install drbd-adapter ./drbd-adapter \
+    -n hwameistor --create-namespace \
+    --set imagePullPolicy=Always \
+    --set registry=daocloud.io/daocloud
 ```
 
 ### Set OS Distros
@@ -78,7 +95,6 @@ distros:
 - rhel8
 - bionic
 #- focal
-#- jammy
 ```
 
 ### Post-installation Check
