@@ -3,25 +3,60 @@ ARG DRBD_VER
 FROM ubuntu:focal as compiler-utils
 
 RUN apt-get update && \
-    apt-get install -y build-essential wget flex automake 
+    apt-get install -y build-essential wget flex automake git
 
 # Compile drbd-utils statically for all Linux distros
 ARG DRBD_UTILS_VER
 
-RUN wget --no-check-certificate https://pkg.linbit.com//downloads/drbd/utils/drbd-utils-${DRBD_UTILS_VER}.tar.gz && \
-    tar -zxf drbd-utils-${DRBD_UTILS_VER}.tar.gz
+ARG DRBD_HEADERS_SHA
 
-RUN cd drbd-utils-${DRBD_UTILS_VER} && \
-    ./configure \
-    --with-prebuiltman \
-    --with-drbdmon \
-    --without-manual \
-    --without-xen \
-    --without-heartbeat \
-    CFLAGS="-static" LDFLAGS="-static" && \
-    make tools && \
-    mkdir /drbd-utils && \
-    find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /drbd-utils/ \;
+## For latest utils
+# RUN wget --no-check-certificate https://pkg.linbit.com//downloads/drbd/utils/drbd-utils-${DRBD_UTILS_VER}.tar.gz && \
+#     tar -zxf drbd-utils-${DRBD_UTILS_VER}.tar.gz
+
+# RUN cd drbd-utils-${DRBD_UTILS_VER} && \
+#     ./configure \
+#     --with-prebuiltman \
+#     --with-drbdmon \
+#     --without-manual \
+#     --without-xen \
+#     --without-heartbeat \
+#     CFLAGS="-static" LDFLAGS="-static" && \
+#     make tools && \
+#     mkdir /drbd-utils && \
+#     find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /drbd-utils/ \;
+
+ RUN set -x && \
+        git clone -n https://github.com/LINBIT/drbd-utils.git && \
+        cd drbd-utils/ && \
+        git checkout v${DRBD_UTILS_VER} && \
+        cd .. 
+        
+RUN set -x && \
+        git clone -n https://github.com/LINBIT/drbd-headers.git && \
+        cd drbd-headers/ && \
+        git checkout ${DRBD_HEADERS_SHA} && \
+        cd ..
+
+RUN set -x && \
+        mv drbd-headers drbd-utils/ && \
+        cd drbd-utils/ && \
+        ./autogen.sh && \
+        ./configure \
+          --with-prebuiltman \
+          -with-drbdmon \
+          --without-manual \
+          --without-xen \
+          --without-heartbeat \
+          CFLAGS="-static" \
+          LDFLAGS="-static" && \
+          make tools && \
+          mkdir -v /utils && \
+          find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /utils/ \;
+
+RUN ls -1 /utils/
+        
+RUN /utils/drbdadm --version
 
 FROM drbd9-compiler-centos7:v${DRBD_VER} AS compiler-centos7
 
@@ -32,7 +67,7 @@ FROM busybox
 
 ARG DRBD_VER
 
-COPY --from=compiler-utils /drbd-utils /files/drbd-utils
+COPY --from=compiler-utils /utils /files/utils
 
 COPY --from=compiler-centos7 /pkgs/ /files/
 

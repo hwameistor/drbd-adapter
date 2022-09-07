@@ -33,23 +33,20 @@ jobs:
           config: helm/.cr/config.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Set up yq
-        uses: mikefarah/yq@master
       - name: Merge index.yaml
         run: |
-          sleep 60
-          mkdir -vp /tmp/gh
-          curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > /tmp/gh/hms.yaml
-          curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > /tmp/gh/dra.yaml
-          yq eval-all '. as $item ireduce ({}; . * $item)' /tmp/gh/hms.yaml /tmp/gh/dra.yaml > /tmp/gh/index.yaml
-          cat /tmp/gh/index.yaml
-      - name: Pushes to hwameistor main repo
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.GH_PAGES_DEPLOY }}
-        with:
-          source-directory: /tmp/gh
-          destination-github-username: ${{ env.GIT_ORG }}
-          destination-repository-name: hwameistor
-          user-email: alexzhc@hotmail.com
-          target-branch: gh-pages
+          snap install yq
+          cd
+          git clone -n git@github.com:${GIT_ORG}/hwameistor.git
+          cd hwameistor
+          git checkout gh-pages
+          ls -1
+          sleep 10
+          curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > hms.yaml
+          curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > dra.yaml
+          yq eval-all '. as $item ireduce ({}; . * $item)' hms.yaml dra.yaml > index.yaml
+          cat index.yaml
+          rm -vf hms.yaml dra.yaml
+          git add -A .
+          git commit -m 'Update index.yaml with the latest drbd-adapter release'
+          git push

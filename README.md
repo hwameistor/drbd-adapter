@@ -21,14 +21,22 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 * x86_64
 
+## DRBD Versions
+
+* DRBD: v9.0.32-1
+* DRBD Utils: v9.12.1
+
 ## OS Distro Support
 
 * RHEL/CentOS 7
-* RHEL/CentOS 7
+* RHEL/CentOS 8
 * Kylin V10
 * Ubuntu 18 Bionic
 * Ubuntu 20 Focal
-* Ubuntu 22 Jammy
+
+### Not Supported, but for test only
+
+* Ubuntu 22 Jammy (will install DRBD v9.1.10 )
 
 ## Kubernetes Version
 
@@ -78,7 +86,6 @@ distros:
 - rhel8
 - bionic
 #- focal
-#- jammy
 ```
 
 ### Post-installation Check

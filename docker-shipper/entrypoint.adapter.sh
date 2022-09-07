@@ -72,9 +72,10 @@ if [[ $LB_DROP == yes ]]; then
    cp -vf /pkgs/drbd.modules-load.conf /etc/modules-load.d/drbd.conf
 
    # drop drbd utils and set up conf directories
-   cp -vf /pkgs/drbd-utils/* /usr-local/bin/
+   cp -vf /pkgs/utils/* /usr-local/bin/
    cat /pkgs/drbd.conf > /etc/drbd.conf
    cp -vf /pkgs/global_common.conf /etc/drbd.d/
+   
    for i in etc var; do 
       mv -vf /usr-local/$i /usr-local/$i.bak
       ln -svf /$i /usr-local/$i

@@ -43,8 +43,12 @@ spec:
       {{- end }}
       {{- range $index, $dist := $distros | uniq }}
       {{- if regexMatch "^(rhel[78]|bionic|focal|jammy)$" $dist }}
+      {{- $tag := $.Values.drbdVersion  }}
+      {{- if eq $dist "jammy" }}
+        {{- $tag = "v9.1.10" }}
+      {{- end }}
       - name: {{ $dist }}
-        image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $.Values.drbdVersion }}
+        image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $tag }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         command: [ /pkgs/entrypoint.adapter.sh ]
         securityContext:
@@ -86,12 +90,19 @@ spec:
       containers:
       - name: monitor
         # Source registry: quay.io/piraeusdatastore/drbd-reactor
-        image: {{ .Values.registry}}/drbd-reactor:{{ .Values.drbdReactorVersion}}
+        image: {{ $.Values.registry}}/drbd-reactor:{{ $.Values.drbdReactorVersion}}
         imagePullPolicy: {{ .Values.imagePullPolicy}}
+        {{- if regexMatch "^9.1." $.Values.drbdVersion }} # DRBD Reactor only supports DRBD 9.1.x
         command:
         - /usr/sbin/drbd-reactor
         - -c
         - /pkgs/drbd-reactor.toml
+        {{- else }}
+        command:
+        - tail 
+        - -f
+        - /dev/null     
+        {{- end }}  
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
