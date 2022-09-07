@@ -34,12 +34,16 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Merge index.yaml
+        env:
+          SSH_ID: ${{ secrets.GH_PAGES_DEPLOY }}
         run: |
           sudo snap install yq
+          mkdir -vp ~/.ssh
+          echo "${{SSH_ID}}" > ~/.ssh/id_gitaction
+          cat ~/.ssh/id_gitaction
           cd
-          echo "${{ secrets.GH_PAGES_DEPLOY }}" > id_gitaction
-          cat id_gitaction
-          ssh-add id_gitaction
+          pwd
+          ls -1
           git clone -n git@github.com:${GIT_ORG}/hwameistor.git
           cd hwameistor
           git checkout gh-pages
