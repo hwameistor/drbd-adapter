@@ -39,7 +39,7 @@ jobs:
         run: |
           sudo snap install yq
           mkdir -vp ~/.ssh
-          echo "${{SSH_ID}}" > ~/.ssh/id_gitaction
+          echo "${SSH_ID}" > ~/.ssh/id_gitaction
           cat ~/.ssh/id_gitaction
           cd
           pwd
