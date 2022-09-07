@@ -35,7 +35,7 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Merge index.yaml
         run: |
-          snap install yq
+          sudo snap install yq
           cd
           git clone -n git@github.com:${GIT_ORG}/hwameistor.git
           cd hwameistor
