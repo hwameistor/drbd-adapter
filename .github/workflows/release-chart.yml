@@ -34,26 +34,10 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Merge index.yaml
-        env:
-          SSH_ID: ${{ secrets.GH_PAGES_DEPLOY }}
         run: |
           sudo snap install yq
-          mkdir -vp ~/.ssh
-          echo "${SSH_ID}" > ~/.ssh/id_gitaction
-          cat ~/.ssh/id_gitaction
-          cd
-          pwd
-          ls -1
-          git clone -n git@github.com:${GIT_ORG}/hwameistor.git
-          cd hwameistor
-          git checkout gh-pages
-          ls -1
           sleep 10
           curl https://raw.githubusercontent.com/${GIT_ORG}/hwameistor/gh-pages/index.yaml > hms.yaml
           curl https://raw.githubusercontent.com/${GIT_ORG}/drbd-adapter/gh-pages/index.yaml > dra.yaml
           yq eval-all '. as $item ireduce ({}; . * $item)' hms.yaml dra.yaml > index.yaml
           cat index.yaml
-          rm -vf hms.yaml dra.yaml
-          git add -A .
-          git commit -m 'Update index.yaml with the latest drbd-adapter release'
-          git push
