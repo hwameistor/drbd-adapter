@@ -58,6 +58,10 @@ $ yum install -y kernel-devel-$(uname -r)
 $ apt-get install -y linux-headers-$(uname -r)
 ```
 
+> **Note:** 
+> 
+> For major releases of stock RHEL/CentOS 7 and 8, `kernel-devel` is not needed
+
 ### OS Distros
 
 By default, OS distros are auto-detected by helm `lookup` function.
