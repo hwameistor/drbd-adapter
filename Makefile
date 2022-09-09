@@ -1,6 +1,10 @@
-DRBD_VER ?= 9.0.32-1
-DRBD_UTILS_VER ?= 9.12.1
-DRBD_HEADERS_SHA ?= c757cf357edef67751b8f45a6ea894d287180087
+DRBD_VER ?= 9.0.32-1 # another tested value is: 9.1.11
+DRBD_UTILS_VER ?= 9.12.1 # another tested value is: 9.21.4
+
+# Pick a commit according to date from: https://github.com/LINBIT/drbd-headers/commits/master
+# For utils 9.21.4: fc45d779096ae5943ea3f56934a1f9b48ffb8e41
+DRBD_HEADERS_SHA ?= c757cf357edef67751b8f45a6ea894d287180087 # for utils 9.12.1
+
 KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
@@ -9,7 +13,7 @@ REG ?= daocloud.io/daocloud # Test Registry
 
 drbd9:
 	 cd docker-drbd9 && \
-	 ./build.sh $(DRBD_VER)
+	 ./build.sh $(DRBD_VER) rhel7 rhel8 bionic focal jammy
 
 compiler-centos7:
 	cd docker-shipper && \

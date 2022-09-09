@@ -5,10 +5,7 @@ on:
     branches: [ "main" ]
     paths:
     - 'docker-drbd9/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-    - 'docker-drbd9/**'
+
 jobs:
 
   build:

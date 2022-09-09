@@ -75,6 +75,6 @@ COPY --from=compiler-centos8 /pkgs/ /files/
 
 COPY . /files/
 
-RUN chmod -v +x /files/entrypoint.adapter.sh
+RUN chmod -v +x /files/entrypoint.adapter.sh /files/drbd.modules
 
 CMD mv -vf /files/* /pkgs/

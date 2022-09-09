@@ -16,10 +16,11 @@ if [ -z $host_dist ] \
    host_dist=rhel8
 fi
 
-# Gracefully exit for distro mismatch, so that next initContainer may start
+# For DaemonSet: Gracefully exit for distro mismatch, so that next initContainer may start
+# For Job: Exit failure
 if [[ $host_dist != $image_dist ]]; then 
    echo "Image type does not match OS type, skip !" 
-   exit 0
+   [[ $LB_SKIP == 'yes' ]] && exit 0 || exit 1
 fi
 
 ## Unload current drbd modules from kernel if it is lower than the target version 
@@ -70,6 +71,7 @@ if [[ $LB_DROP == yes ]]; then
 
    # onboot load modules 
    cp -vf /pkgs/drbd.modules-load.conf /etc/modules-load.d/drbd.conf
+   cp -vf /pkgs/drbd.modules /etc/sysconfig/modules/
 
    # drop drbd utils and set up conf directories
    cp -vf /pkgs/utils/* /usr-local/bin/
@@ -80,4 +82,11 @@ if [[ $LB_DROP == yes ]]; then
       mv -vf /usr-local/$i /usr-local/$i.bak
       ln -svf /$i /usr-local/$i
    done 
+fi
+
+# Check if DRBD is loaded correctly
+if [[ $( cat /proc/drbd | awk '/^version/ {print $2}' ) == $DRBD_VERSION ]]; then
+   exit 0
+else 
+   exit 1
 fi
