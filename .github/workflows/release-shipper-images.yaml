@@ -5,10 +5,7 @@ on:
     branches: [ "main" ]
     paths:
     - 'docker-shipper/*'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-    - 'docker-shipper/*'
+
 jobs:
 
   build:

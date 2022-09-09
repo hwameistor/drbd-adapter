@@ -1,17 +1,20 @@
+{{ if eq $.Values.deployKind "daemonset" }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: drbd-adapter
+  name: {{ $.Values.prefix }}drbd-adapter
   labels:
-    k8s-app: drbd-adapter
+    app: {{ $.Values.prefix }}drbd-adapter
+    drbd-version: {{ $.Values.drbdVersion }}
 spec:
   selector:
     matchLabels:
-      k8s-app: drbd-adapter
+      app: {{ $.Values.prefix }}drbd-adapter
   template:
     metadata:
       labels:
-        k8s-app: drbd-adapter
+        app: {{ $.Values.prefix }}drbd-adapter
+        drbd-version: {{ $.Values.drbdVersion }}
     spec:
       initContainers:
       - name: shipper
@@ -21,8 +24,7 @@ spec:
         - name: pkgs
           mountPath: /pkgs
       {{- $distros := $.Values.distros }}
-      {{- if $distros -}}
-      {{ else }}
+      {{- if not $distros -}}
         {{- $distros = append $distros "flatcar" }}
         {{- range $index, $node := (lookup "v1" "Node" "" "").items }}
           {{- $osImage := lower $node.status.nodeInfo.osImage }}
@@ -45,7 +47,7 @@ spec:
       {{- if regexMatch "^(rhel[78]|bionic|focal|jammy)$" $dist }}
       {{- $tag := $.Values.drbdVersion  }}
       {{- if eq $dist "jammy" }}
-        {{- $tag = "v9.1.10" }}
+        {{- $tag = "v9.1.11" }}
       {{- end }}
       - name: {{ $dist }}
         image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $tag }}
@@ -54,6 +56,8 @@ spec:
         securityContext:
           privileged: true
         env:
+        - name: LB_SKIP
+          value: 'yes'
         - name: LB_DROP
           value: {{ $.Values.drop | quote }}
         - name: LB_UPGRADE
@@ -85,13 +89,15 @@ spec:
           readOnly: true
         - name: etc-modules-load
           mountPath: /etc/modules-load.d
+        - name: etc-sysconfig-modules
+          mountPath: /etc/sysconfig/modules
         {{- end }}
         {{- end }}
       containers:
       - name: monitor
         # Source registry: quay.io/piraeusdatastore/drbd-reactor
         image: {{ $.Values.registry}}/drbd-reactor:{{ $.Values.drbdReactorVersion}}
-        imagePullPolicy: {{ .Values.imagePullPolicy}}
+        imagePullPolicy: {{ $.Values.imagePullPolicy}}
         {{- if regexMatch "^9.1." $.Values.drbdVersion }} # DRBD Reactor only supports DRBD 9.1.x
         command:
         - /usr/sbin/drbd-reactor
@@ -142,6 +148,12 @@ spec:
       - name: etc-modules-load
         hostPath:
           path: /etc/modules-load.d
+          type: DirectoryOrCreate
+      - name: etc-sysconfig-modules
+        hostPath:
+          path: /etc/sysconfig/modules
+          type: DirectoryOrCreate   
       affinity:
         nodeAffinity:
 		    {{- toYaml $.Values.affinity.nodeAffinity | nindent 10 }}
+{{- end }}

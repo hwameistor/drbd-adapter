@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for i in drbd drbd_transport_tcp; do
+    /sbin/modinfo $i && /sbin/modprobe $i
+done
