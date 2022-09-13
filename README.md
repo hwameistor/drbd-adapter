@@ -40,6 +40,10 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 * Ubuntu 22 Jammy ( experimental: will always install DRBD v9.1.11 )
 
+### Secure Boot
+    
+    NOT YET SUPPORTED
+
 ## Kubernetes Version
 
 * 18+
@@ -196,3 +200,11 @@ Cause:
 
 Solution:
     Delete those two directories on hosts, and then uninstall chart release and re-install it.
+
+### 2. `modprobe`: ERROR: could not insert `drbd`: Required key not available
+
+Cause:
+    Secure Boot is not supported yet
+
+Solution:
+    Future release will handle kernel module signing.

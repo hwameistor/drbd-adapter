@@ -8,12 +8,12 @@ DRBD_HEADERS_SHA ?= c757cf357edef67751b8f45a6ea894d287180087 # for utils 9.12.1
 KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
-IMG ?= shipper rhel7 rhel8 bionic focal jammy
+IMG ?= shipper rhel7 rhel8 rhel9 bionic focal jammy
 REG ?= daocloud.io/daocloud # Test Registry
 
 drbd9:
 	 cd docker-drbd9 && \
-	 ./build.sh $(DRBD_VER) rhel7 rhel8 bionic focal jammy
+	 ./build.sh $(DRBD_VER) rhel7 rhel8 rhel9 bionic focal jammy
 
 compiler-centos7:
 	cd docker-shipper && \

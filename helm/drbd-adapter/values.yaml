@@ -4,6 +4,7 @@ registry: ghcr.io/hwameistor # Users in China may use mirror "daocloud.io/daoclo
 imagePullPolicy: IfNotPresent # For testing, set 'Always'
 
 drbdVersion: v9.0.32-1 # another supported value is: 9.1.11
+drbdUtilsVersion: v9.21.4
 drbdReactorVersion: v0.8.0
 
 # Here are all supported distros, remove the ones that are not in your cluster
@@ -14,8 +15,11 @@ distros: []  # Must be set as "[]" (empty array) to enable AutoDetect"
 # - focal
 # - jammy
 
-# by default upgrade if possible: (yes|no)
+# by default do not upgrade: (yes|no)
 upgrade: "no"
+
+# by default check hostname: (yes|no)
+checkHostname: "yes"
 
 # only apply to "deployKind: job"
 # by default NOT deploying on masters (yes|no)

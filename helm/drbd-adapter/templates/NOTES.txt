@@ -1,25 +1,26 @@
-Thank you for installing {{ .Chart.Name }}.
-
+Thank you for installing {{ .Chart.Name }}. 
 This is a tool image to help install DRBD kernel modules and DRBD utils.
 
-Versions:
+DRBD Version:
+    DRBD Kernel Module:   v9.0.32-1
+    DRBD User   Utils :   v9.21.4
 
-    DRBD Kernel Module: {{ .Values.drbdVersion }}
-    DRBD Utils:         {{ .Values.drbdUtilsVersion }}
-    DRBD Reactor:       {{ .Values.drbdReactorVersion }}
+Supported Arch:
+    x86_64
 
-For now, it supports the following OS distros: 
-
+Supported OS Distros: 
     RHEL/CentOS 7
     RHEL/CentOS 8
     Ubuntu 18 Bionic
     Ubuntu 20 Focal
     
-Not Supported, but for test only
+Not Supported, but for test only:
+    Ubuntu 22 Jammy (* will install DRBD v9.1.11 )
 
-    Ubuntu 22 Jammy (* will install DRBD v9.1.10 )
+Secure Boot: 
+    NOT YET SUPPORTED
 
 OS distro is automatically detected by HELM "lookup" function. Unsupported distros are ignored. 
-To manually specify OS distros, add values to "distros: []" in values.yaml
+To manually specify OS distros in DaemonSet mode, add values to "distros: []" in values.yaml
 
 Read more info at https://github.com/hwameistor/drbd-adapter.

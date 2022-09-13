@@ -39,4 +39,8 @@ COPY /pkgs /pkgs
 
 COPY /entry.sh /
 RUN chmod +x /entry.sh
+
+# add hostname
+RUN yum install -y hostname && yum clean all -y
+
 ENTRYPOINT /entry.sh
