@@ -85,8 +85,16 @@ if [[ $LB_DROP == yes ]]; then
 fi
 
 # Check if DRBD is loaded correctly
-if [[ $( cat /proc/drbd | awk '/^version/ {print $2}' ) == $DRBD_VERSION ]]; then
-   exit 0
-else 
+if [[ $( cat /proc/drbd | awk '/^version/ {print $2}' ) != $DRBD_VERSION ]]; then
+   echo "ERROR: DRBD is NOT loaded with the right version"
    exit 1
 fi
+
+# Check if hostname is the same as k8s node name
+# With `hostNetwork`, container `hostname` cmd result is from host /proc/sys/kernel/hostname and /proc/sys/kernel/domainname 
+if [[ $LB_CHECK_HOSTNAME == 'yes' ]] && [[ $(hostname) != $NODE_NAME ]]; then
+   echo "ERROR: Hostname does not match K8s node name!"
+   exit 1
+fi 
+
+exit 0
