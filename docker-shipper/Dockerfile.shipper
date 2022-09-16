@@ -48,6 +48,8 @@ RUN set -x && \
           --without-manual \
           --without-xen \
           --without-heartbeat \
+          --sysconfdir=/etc \
+          --localstatedir=/var \
           CFLAGS="-static" \
           LDFLAGS="-static" && \
           make tools && \

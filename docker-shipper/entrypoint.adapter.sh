@@ -78,10 +78,6 @@ if [[ $LB_DROP == yes ]]; then
    cat /pkgs/drbd.conf > /etc/drbd.conf
    cp -vf /pkgs/global_common.conf /etc/drbd.d/
    
-   for i in etc var; do 
-      mv -vf /usr-local/$i /usr-local/$i.bak
-      ln -svf /$i /usr-local/$i
-   done 
 fi
 
 # Check if DRBD is loaded correctly
