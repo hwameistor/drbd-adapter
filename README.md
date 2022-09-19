@@ -5,10 +5,10 @@
 `entrypoint.adapter.sh` wraps around the official containerized DRBD kernel module loader script `entry.sh` to achieve the following goals:
 
 1. Adapt host OS type automatically;
-2. Drop drbd kernel modules and drbd-utils to the host;
+2. Drop `drbd kernel modules` and `drbd-utils` to the host;
 3. Use pre-built kernel modules for stock RHEL/CentOS hosts;
 4. Use dynamically built kernel modules for un-stock RHEL/CentOS hosts and Ubuntu hosts;
-5. Provide two deployment mode: Job (default) and DaemonSet
+5. Provide two deployment modes: Job (default) and DaemonSet
 
 ![flowchart](flowchart.drawio.svg)
 
@@ -30,8 +30,8 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 ## OS Distro Support
 
-* RHEL/CentOS 7
-* RHEL/CentOS 8
+* RHEL/CentOS/RockyLinux/AlmaLinux 7
+* RHEL/CentOS/RockyLinux/AlmaLinux 8
 * Kylin V10
 * Ubuntu 18 Bionic
 * Ubuntu 20 Focal
@@ -62,8 +62,8 @@ $ yum install -y kernel-devel-$(uname -r)
 $ apt-get install -y linux-headers-$(uname -r)
 ```
 
-> **Note:** 
-> 
+> **Note:**
+>
 > For major releases of stock RHEL/CentOS 7 and 8, `kernel-devel` is not needed
 
 ### OS Distros
@@ -189,7 +189,7 @@ Remove `nodeAffinity`
 
 #### Job
 
-Set `deployOnMaster: "no"`
+Set `deployOnMasters: "no"`
 
 ## Common Issues
 

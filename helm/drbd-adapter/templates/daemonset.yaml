@@ -18,7 +18,7 @@ spec:
     spec:
       initContainers:
       - name: shipper
-        image: {{ $.Values.registry }}/drbd9-shipper:{{ $.Values.drbdVersion }}
+        image: {{ $.Values.registry }}/drbd9-shipper:{{ $.Values.drbdVersion }}_{{ $.Chart.Version }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         volumeMounts:
         - name: pkgs
@@ -84,8 +84,8 @@ spec:
           readOnly: true
         - name: lib-modules
           mountPath: /lib/modules
-        - name: usr-local
-          mountPath: /usr-local
+        - name: usr-local-bin
+          mountPath: /usr-local-bin
         - name: etc-drbd-conf
           mountPath: /etc/drbd.conf
         - name: etc-drbd-d
@@ -127,18 +127,20 @@ spec:
       - name: os-release
         hostPath:
           path: /etc/os-release
+          type: FileOrCreate
       - name: centos-release
         hostPath:
           path: /etc/centos-release
+          type: FileOrCreate
       - name: usr-src
         hostPath:
           path: /usr/src    
       - name: lib-modules
         hostPath:
           path: /lib/modules
-      - name: usr-local
+      - name: usr-local-bin
         hostPath:
-          path: /usr/local
+          path: /usr/local/bin
       - name: etc-drbd-conf
         hostPath:
           path: /etc/drbd.conf

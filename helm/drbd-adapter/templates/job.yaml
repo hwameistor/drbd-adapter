@@ -4,10 +4,12 @@
 {{ $osImage := lower $node.status.nodeInfo.osImage }}
 {{ $tag := $.Values.drbdVersion  }}
 {{ $distro := "unsupported" }}
-{{ if regexMatch "(red hat enterprise|centos) .*7" $osImage }}
+{{ if regexMatch "(red hat enterprise|centos|almalinux|rocky linux) .*7" $osImage }}
   {{ $distro = "rhel7" }}
-{{ else if regexMatch "(red hat enterprise|centos) .*8" $osImage }}
+{{ else if regexMatch "(red hat enterprise|centos|almalinux|rocky linux) .*8" $osImage }}
   {{ $distro = "rhel8" }}
+{{ else if regexMatch "(red hat enterprise|centos|almalinux|rocky linux) .*9" $osImage }}
+  {{ $distro = "rhel9" }}
 {{ else if regexMatch "ubuntu .*18" $osImage }}
   {{ $distro = "bionic" }}
 {{ else if regexMatch "ubuntu .*20" $osImage }}
@@ -16,7 +18,7 @@
   {{ $distro = "jammy" }}
   {{ $tag = "v9.1.11" }}
 {{ end }}
-{{ if and (ne $.Values.deployOnMaster "yes") (or (hasKey $node.metadata.labels "node-role.kubernetes.io/master") (hasKey $node.metadata.labels "node-role.kubernetes.io/control-plane"))}}
+{{ if and (ne $.Values.deployOnMasters "yes") (or (hasKey $node.metadata.labels "node-role.kubernetes.io/master") (hasKey $node.metadata.labels "node-role.kubernetes.io/control-plane"))}}
 {{ else }}
 ---
 apiVersion: batch/v1
@@ -42,7 +44,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
       - name: shipper
-        image: {{ $.Values.registry }}/drbd9-shipper:{{ $tag }}
+        image: {{ $.Values.registry }}/drbd9-shipper:{{ $.Values.drbdVersion }}_{{ $.Chart.Version }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         volumeMounts:
         - name: pkgs
@@ -83,8 +85,8 @@ spec:
           readOnly: true
         - name: lib-modules
           mountPath: /lib/modules
-        - name: usr-local
-          mountPath: /usr-local
+        - name: usr-local-bin
+          mountPath: /usr-local-bin
         - name: etc-drbd-conf
           mountPath: /etc/drbd.conf
         - name: etc-drbd-d
@@ -103,51 +105,20 @@ spec:
       - name: os-release
         hostPath:
           path: /etc/os-release
-      - name: centos-release
-        hostPath:
-          path: /etc/centos-release
-      - name: usr-src
-        hostPath:
-          path: /usr/src    
-      - name: lib-modules
-        hostPath:
-          path: /lib/modules
-      - name: usr-local
-        hostPath:
-          path: /usr/local
-      - name: etc-drbd-conf
-        hostPath:
-          path: /etc/drbd.conf
           type: FileOrCreate
-      - name: etc-drbd-d
-        hostPath:
-          path: /etc/drbd.d
-          type: DirectoryOrCreate
-      - name: var-lib-drbd
-        hostPath:
-          path: /var/lib/drbd
-          type: DirectoryOrCreate
-      - name: etc-modules-load
-        hostPath:
-          path: /etc/modules-load.d
-      volumes:
-      - name: pkgs
-        emptyDir: {}
-      - name: os-release
-        hostPath:
-          path: /etc/os-release
       - name: centos-release
         hostPath:
           path: /etc/centos-release
+          type: FileOrCreate
       - name: usr-src
         hostPath:
           path: /usr/src    
       - name: lib-modules
         hostPath:
           path: /lib/modules
-      - name: usr-local
+      - name: usr-local-bin
         hostPath:
-          path: /usr/local
+          path: /usr/local/bin
       - name: etc-drbd-conf
         hostPath:
           path: /etc/drbd.conf
