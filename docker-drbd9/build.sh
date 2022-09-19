@@ -6,7 +6,9 @@ DRBD_VER=${1:-9.0.32-1}
 
 sed -i "s/^ENV DRBD_VERSION.*/ENV DRBD_VERSION ${DRBD_VER}/" Dockerfile.* 
 
-[ -f ./drbd.tar.gz ] || wget https://pkg.linbit.com/downloads/drbd/"$([[ $DRBD_VER =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VER}.tar.gz -O ./drbd.tar.gz
+rm -f ./drbd.tar.gz
+
+wget https://pkg.linbit.com/downloads/drbd/"$([[ $DRBD_VER =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VER}.tar.gz -O ./drbd.tar.gz
 
 shift
 for i in $@; do

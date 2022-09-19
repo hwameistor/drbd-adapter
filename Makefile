@@ -1,15 +1,16 @@
-DRBD_VER ?= 9.0.32-1 # another tested value is: 9.1.11
-DRBD_UTILS_VER ?= 9.12.1 # another tested value is: 9.21.4
+CHART_VER ?= 0.3.3
+DRBD_VER ?= 9.0.32-1# another tested value is: 9.1.11
+DRBD_UTILS_VER ?= 9.12.1# another tested value is: 9.21.4
 
 # Pick a commit according to date from: https://github.com/LINBIT/drbd-headers/commits/master
 # For utils 9.21.4: fc45d779096ae5943ea3f56934a1f9b48ffb8e41
-DRBD_HEADERS_SHA ?= c757cf357edef67751b8f45a6ea894d287180087 # for utils 9.12.1
+DRBD_HEADERS_SHA ?= c757cf357edef67751b8f45a6ea894d287180087# for utils 9.12.1
 
 KVER := $(shell uname -r)
 DIST ?= rhel7
 ENTRY ?= /pkgs/entrypoint.adapter.sh
 IMG ?= shipper rhel7 rhel8 rhel9 bionic focal jammy
-REG ?= daocloud.io/daocloud # Test Registry
+REG ?= daocloud.io/daocloud# Test-only Registry
 
 drbd9:
 	 cd docker-drbd9 && \
@@ -42,7 +43,7 @@ shipper:
 		--build-arg DRBD_VER=$(DRBD_VER) \
 		--build-arg DRBD_UTILS_VER=$(DRBD_UTILS_VER) \
 		--build-arg DRBD_HEADERS_SHA=$(DRBD_HEADERS_SHA) \
-		-t drbd9-shipper:v$(DRBD_VER)
+		-t drbd9-shipper:v$(DRBD_VER)_$(CHART_VER)
 
 cleanup:
 	docker volume rm pkgs || true
@@ -58,7 +59,7 @@ test-docker:
 	docker volume rm pkgs || true
 	docker run --rm \
 	    -v pkgs:/pkgs \
-		drbd9-shipper:v$(DRBD_VER)
+		drbd9-shipper:v$(DRBD_VER)_$(CHART_VER)
 	docker run --rm \
 		-v pkgs:/pkgs \
 	   --privileged \
@@ -80,11 +81,13 @@ test:
 		--set registry=daocloud.io/daocloud
 
 push:
-	for i in $(IMG) ; do \
-		for j in $(REG); do \
-			docker tag drbd9-$$i:v$(DRBD_VER) $$j/drbd9-$$i:v$(DRBD_VER); \
-			docker push $$j/drbd9-$$i:v$(DRBD_VER); \
+	for i in $(REG) ; do \
+		for j in $(IMG); do \
+			[ $$j = "shipper" ] && ver=$(DRBD_VER)_$(CHART_VER) || ver=$(DRBD_VER); \
+			docker tag drbd9-$$j:v$${ver} $$i/drbd9-$$j:v$${ver}; \
+			docker push $$i/drbd9-$$j:v$${ver}; \
 		done \
 	done
+
 
 all: drbd9 compiler-centos7 compiler-centos8 shipper push

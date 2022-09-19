@@ -23,19 +23,19 @@ checkHostname: "yes"
 
 # only apply to "deployKind: job"
 # by default NOT deploying on masters (yes|no)
-deployOnMaster: "no"
+deployOnMasters: "no"
 
 # only apply to "deployKind: daemonset"
 # by default drop binary files to the host: (yes|no), 
 drop: "yes"
 
 # avoid master nodes, you may defind more here to avoid more nodes
-affinity: 
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: node-role.kubernetes.io/master
-          operator: DoesNotExist
-        - key: node-role.kubernetes.io/control-plane
-          operator: DoesNotExist
+affinity: {}
+  # nodeAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #     - matchExpressions:
+  #       - key: node-role.kubernetes.io/master
+  #         operator: DoesNotExist
+  #       - key: node-role.kubernetes.io/control-plane
+  #         operator: DoesNotExist
