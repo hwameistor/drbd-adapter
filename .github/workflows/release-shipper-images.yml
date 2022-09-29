@@ -31,7 +31,7 @@ jobs:
       run: echo ${{ steps.qemu.outputs.platforms }}
 
     - name: Build shipper images
-      run: make shipper REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
+      run: make shipper CACHE=--no-cache REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
 
     - name: Login registry
       run: |

@@ -30,7 +30,7 @@ jobs:
       run: echo ${{ steps.qemu.outputs.platforms }}
 
     - name: Build official DRBD9 images
-      run: make drbd9 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
+      run: make drbd9 CACHE=--no-cache REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
 
     - name: Login registry
       run: |

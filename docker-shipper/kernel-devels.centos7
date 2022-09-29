@@ -13,3 +13,4 @@ rhel7.0 3.10.0-123  https://vault.centos.org/7.0.1406/os/x86_64/Packages/kernel-
 # aarch64 
 # rhel7.9 5.4.72-200      http://mirror.centos.org/altarch/7.9.2009/kernel/aarch64/Packages/kernel-devel-5.4.72-200.el7.aarch64.rpm
 # rhel7.8 4.18.0-147.8.1  https://vault.centos.org/altarch/7.8.2003/os/aarch64/Packages/kernel-devel-4.18.0-147.8.1.el7.aarch64.rpm
+#
