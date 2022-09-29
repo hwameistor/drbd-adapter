@@ -10,7 +10,6 @@ Open Kylin <https://gitee.com/organizations/openkylin/projects>
 Roland Kammerer <roland.kammerer@linbit.com>
 Alex Zheng  <alex.zheng@daocloud.io>
 
-
 ## LICENCE
 
 GPL-2.0 <https://github.com/LINBIT/drbd/blob/drbd-9.1/COPYING>
