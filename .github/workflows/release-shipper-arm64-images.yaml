@@ -30,7 +30,7 @@ jobs:
       run: echo ${{ steps.qemu.outputs.platforms }}
 
     - name: Build shipper images
-      run: make shipper ARCH=linux//arm64 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
+      run: make shipper ARCH=linux/arm64 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
 
     - name: Login registry
       run: |

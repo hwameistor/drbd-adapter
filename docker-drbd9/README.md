@@ -3,7 +3,7 @@
 ## SOURCE
 
 LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
-Kylin <https://www.kylinos.cn>
+Open Kylin <https://gitee.com/organizations/openkylin/projects>
 
 ## MAINTAINER
 
