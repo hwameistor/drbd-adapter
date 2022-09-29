@@ -7,6 +7,7 @@ DRBD Version:
 
 Supported Arch:
     x86_64
+    aarch64
 
 Supported OS Distros: 
     RHEL/CentOS 7

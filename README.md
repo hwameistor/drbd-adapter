@@ -27,6 +27,7 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 ## Arch Support
 
 * x86_64
+* aarch64
 
 ## OS Distro Support
 

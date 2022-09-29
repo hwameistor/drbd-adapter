@@ -1,22 +1,31 @@
 #!/bin/bash -x
 
 DRBD_VER=${1:-9.0.32-1}
+ARCH=${2:-linux/amd64}
+REG=${3:-daocloud.io/daocloud}
 
 [ -z "$DRBD_VER" ] && echo "Need a DRBD version !" && exit 1
 
-sed -i "s/^ENV DRBD_VERSION.*/ENV DRBD_VERSION ${DRBD_VER}/" Dockerfile.* 
+if ! tar -zxf drbd-${DRBD_VER}.tar.gz  --to-stdout > /dev/null; then
+    rm -vf drbd-${DRBD_VER}.tar.gz
+    wget --no-check-certificate https://pkg.linbit.com/downloads/drbd/"$([[ $DRBD_VER =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VER}.tar.gz
+fi 
 
-rm -f ./drbd.tar.gz
+rm -vf drbd.tar.gz
+cp -vf drbd-${DRBD_VER}.tar.gz drbd.tar.gz
 
-wget https://pkg.linbit.com/downloads/drbd/"$([[ $DRBD_VER =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VER}.tar.gz -O ./drbd.tar.gz
+echo $ARCH | sed "s#,# #g"
 
-shift
+shift 3
 for i in $@; do
     df="Dockerfile.${i}"
-    [ -f $df ] && \
-    docker build . -f "$df"\
-        --build-arg HTTP_PROXY=${http_proxy} \
-        --build-arg HTTPS_PROXY=${https_proxy} \
-        --build-arg FTP_PROXY=${ftp_proxy} \
-        -t "drbd9-${i##*.}:v${DRBD_VER}"
+    [ -f "$df" ] || continue
+    for a in ${ARCH//,/ }; do
+        sed "s/^ENV DRBD_VERSION.*/ENV DRBD_VERSION ${DRBD_VER}/" "$df" | \
+        docker build . -f - \
+            --platform $a \
+            --progress tty \
+            -t ${REG}/drbd9-${i##*.}:v${DRBD_VER}_${a/\//-} \
+        || exit 1
+    done
 done

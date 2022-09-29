@@ -8,12 +8,18 @@ which lbdisttool.py
 image_dist="$(lbdisttool.py -l | awk -F'.' '{print $1}' )"
 host_dist="$(lbdisttool.py -l --os-release /etc/host-release | awk -F'.' '{print $1}' )"
 
-# For Kylin v10, use RHEL 8 base for now
+# For Kylin v10
+if [ -z $image_dist ] \
+   && grep -i "kylin .* v10" /etc/os-release; then
+   echo "Image distro is Kylin V10"
+   image_dist=kylin10
+fi
+
 if [ -z $host_dist ] \
    && uname -r | grep -i '.ky10.' \
-   && grep -iw kylin /etc/host-release; then
+   && grep -i "kylin .* v10" /etc/host-release; then
    echo "Host distro is Kylin V10"
-   host_dist=rhel8
+   host_dist=kylin10
 fi
 
 # For DaemonSet: Gracefully exit for distro mismatch, so that next initContainer may start
