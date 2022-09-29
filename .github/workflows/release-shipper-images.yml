@@ -1,10 +1,11 @@
-name: Release Shipper Image ARM64
+name: Release Shipper Image
 
 on:
   push:
     branches: [ "main" ]
     paths:
     - 'docker-shipper/*'
+    - '.github/workflow/release-shipper-images.yml'
 
 jobs:
 
@@ -30,7 +31,7 @@ jobs:
       run: echo ${{ steps.qemu.outputs.platforms }}
 
     - name: Build shipper images
-      run: make shipper ARCH=linux/arm64 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
+      run: make shipper REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
 
     - name: Login registry
       run: |
@@ -38,4 +39,4 @@ jobs:
 
     - name: Push images
       run: |
-        make push ARCH=linux/arm64 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' ) IMG=shipper
+        make push REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' ) IMG=shipper

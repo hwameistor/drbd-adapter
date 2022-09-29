@@ -1,10 +1,11 @@
-name: Release DRBD9 Images ARM64
+name: Release DRBD9 Images
 
 on:
   push:
     branches: [ "main" ]
     paths:
     - 'docker-drbd9/**'
+    - '.github/workflow/release-drbd9-images.yml'
 
 jobs:
 
@@ -27,9 +28,9 @@ jobs:
         platforms: all
     - name: Available platforms
       run: echo ${{ steps.qemu.outputs.platforms }}
-      
+
     - name: Build official DRBD9 images
-      run: make drbd9 ARCH=linux/arm64 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
+      run: make drbd9 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
 
     - name: Login registry
       run: |
@@ -37,4 +38,4 @@ jobs:
 
     - name: Push images
       run: |
-        make push ARCH=linux/arm64 REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' ) IMG="rhel7 rhel8 rhel9 bionic focal jammy kylin10"
+        make push REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' ) IMG="rhel7 rhel8 rhel9 bionic focal jammy kylin10"
