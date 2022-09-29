@@ -1,79 +1,116 @@
 ARG DRBD_VER
 
+FROM centos:7 AS compiler-centos7
+
+RUN yum install -y --nogpgcheck wget kernel-abi-whitelists gcc flex glibc-devel make automake rpm-build which && \
+    yum -y clean all
+
+# Install kernel-devels of each CentOS 7 major release
+# Must rpm install a kernel-devel for prereq
+COPY kernel-devels.centos7 /pkgs/
+RUN cat /pkgs/kernel-devels.centos7 | grep -v ^# | grep -w $(arch) | awk '{print $1}' | xargs -tI % mkdir -vp /pkgs/% && \
+    cat /pkgs/kernel-devels.centos7 | grep -v ^# | grep -w $(arch) | awk '{print $3}' | xargs -tI % wget % --no-check-certificate && \
+    ls -1 *.rpm | head -1 | xargs -tI % rpm -ivh % --nopreun --nopostun --force && \
+    ls -1 *.rpm | tail -n+2 | xargs -tI % sh -xc 'rpm2cpio % | cpio -idm' && \
+    rm -vf *.rpm
+
+# Compile kmod-drbd for each CentOS 7 major release
+ARG DRBD_VER
+RUN wget --no-check-certificate https://pkg.linbit.com//downloads/drbd/"$([[ $DRBD_VER =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VER}.tar.gz && \
+    tar -zxf drbd-${DRBD_VER}.tar.gz
+RUN mkdir -vp ~/rpmbuild/SOURCES && cd drbd-${DRBD_VER} && \
+    ls -d /usr/src/kernels/* | grep -v debug | xargs -tI % make kmp-rpm KDIR=%
+
+RUN set -x && \
+    rm -vf ~/rpmbuild/RPMS/$(arch)/kmod-drbd-debuginfo* && \
+    cat /pkgs/kernel-devels.centos7 | grep -v ^# | grep $(arch) | \
+    { while read -r line; do \
+      dir=$( echo "$line" | awk '{print $1}' ); \
+      ker=$( echo "$line" | awk '{print $2}' ); \
+      mv -v ~/rpmbuild/RPMS/$(arch)/kmod-drbd*${ker/-/_}*.rpm /pkgs/${dir}/ || exit 1; \
+    done }
+
+FROM centos:8 AS compiler-centos8
+
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+RUN yum install -y --nogpgcheck wget elfutils-libelf-devel kernel-rpm-macros kernel-abi-whitelists gcc flex glibc-devel make automake rpm-build which && \
+    yum -y clean all
+
+# Install kernel-devels of each CentOS 7 major release
+# Must rpm install a kernel-devel for prereq
+COPY kernel-devels.centos8 /pkgs/
+RUN cat /pkgs/kernel-devels.centos8 | grep -v ^# | grep $(arch) |  awk '{print $1}' | xargs -tI % mkdir -vp /pkgs/% && \
+    sed "s/x86_64/$(arch)/g" /pkgs/kernel-devels.centos8 | grep -v ^# | awk '{print $3}' | xargs -tI % wget % --no-check-certificate && \
+    ls -1 *.rpm | head -1 | xargs -tI % rpm -ivh % --nopreun --nopostun --force && \
+    ls -1 *.rpm | tail -n+2 | xargs -tI % sh -xc 'rpm2cpio % | cpio -idm' && \
+    rm -vf *.rpm
+
+# Compile kmod-drbd for each CentOS 7 major release
+ARG DRBD_VER
+RUN wget --no-check-certificate https://pkg.linbit.com//downloads/drbd/"$([[ $DRBD_VER =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VER}.tar.gz && \
+    tar -zxf drbd-${DRBD_VER}.tar.gz
+
+RUN mkdir -vp ~/rpmbuild/SOURCES && cd drbd-${DRBD_VER} && \
+    ls -d /usr/src/kernels/* | grep -v debug | xargs -tI % make kmp-rpm KDIR=%
+
+RUN set -x && \
+    rm -vf ~/rpmbuild/RPMS/$(arch)/kmod-drbd-debuginfo* && \
+    cat /pkgs/kernel-devels.centos8 | grep -v ^# | grep $(arch) | \
+    { while read -r line; do \
+      dir=$( echo "$line" | awk '{print $1}' ); \
+      ker=$( echo "$line" | awk '{print $2}' ); \
+      mv -v ~/rpmbuild/RPMS/$(arch)/kmod-drbd-[0-9]*${ker/-/_}*.rpm /pkgs/${dir}/ || exit 1; \
+    done }
+
+
 FROM ubuntu:focal as compiler-utils
 
 RUN apt-get update && \
-    apt-get install -y build-essential wget flex automake git
+    apt-get install -y build-essential wget flex automake git && \
+    apt-get clean
 
 # Compile drbd-utils statically for all Linux distros
 ARG DRBD_UTILS_VER
 
 ARG DRBD_HEADERS_SHA
 
-## For latest utils
-# RUN wget --no-check-certificate https://pkg.linbit.com//downloads/drbd/utils/drbd-utils-${DRBD_UTILS_VER}.tar.gz && \
-#     tar -zxf drbd-utils-${DRBD_UTILS_VER}.tar.gz
-
-# RUN cd drbd-utils-${DRBD_UTILS_VER} && \
-#     ./configure \
-#     --with-prebuiltman \
-#     --with-drbdmon \
-#     --without-manual \
-#     --without-xen \
-#     --without-heartbeat \
-#     CFLAGS="-static" LDFLAGS="-static" && \
-#     make tools && \
-#     mkdir /drbd-utils && \
-#     find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /drbd-utils/ \;
-
- RUN set -x && \
-        git clone -n https://github.com/LINBIT/drbd-utils.git && \
-        cd drbd-utils/ && \
-        git checkout v${DRBD_UTILS_VER} && \
-        cd .. 
-        
 RUN set -x && \
-        git clone -n https://github.com/LINBIT/drbd-headers.git && \
-        cd drbd-headers/ && \
-        git checkout ${DRBD_HEADERS_SHA} && \
-        cd ..
+    git clone -n https://github.com/LINBIT/drbd-utils.git && \
+    cd drbd-utils/ && \
+    git checkout v${DRBD_UTILS_VER} && \
+    rm -vfr drbd-headers && \
+    git clone -n https://github.com/LINBIT/drbd-headers.git && \
+    cd drbd-headers/ && \
+    git checkout ${DRBD_HEADERS_SHA}
 
 RUN set -x && \
-        mv drbd-headers drbd-utils/ && \
-        cd drbd-utils/ && \
-        ./autogen.sh && \
-        ./configure \
-          --with-prebuiltman \
-          -with-drbdmon \
-          --without-manual \
-          --without-xen \
-          --without-heartbeat \
-          --sysconfdir=/etc \
-          --localstatedir=/var \
-          CFLAGS="-static" \
-          LDFLAGS="-static" && \
-          make tools && \
-          mkdir -v /utils && \
-          find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /utils/ \;
-
-RUN ls -1 /utils/
-        
-RUN /utils/drbdadm --version
-
-FROM drbd9-compiler-centos7:v${DRBD_VER} AS compiler-centos7
-
-FROM drbd9-compiler-centos8:v${DRBD_VER} AS compiler-centos8
+    cd /drbd-utils && \
+    ./autogen.sh && \
+    ./configure \
+        --with-prebuiltman \
+        -with-drbdmon \
+        --without-manual \
+        --without-xen \
+        --without-heartbeat \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        CFLAGS="-static" \
+        LDFLAGS="-static" && \
+    make tools && \
+    mkdir -v /utils && \
+    find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /utils/ \; 
 
 # Create shipper
 FROM busybox
 
 ARG DRBD_VER
 
-COPY --from=compiler-utils /utils /files/utils
-
 COPY --from=compiler-centos7 /pkgs/ /files/
 
 COPY --from=compiler-centos8 /pkgs/ /files/
+
+COPY --from=compiler-utils /utils /files/utils
 
 COPY . /files/
 
