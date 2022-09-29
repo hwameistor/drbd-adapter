@@ -3,7 +3,7 @@
 DRBD_VER=${1:-9.0.32-1}
 ARCH=${2:-linux/amd64}
 REG=${3:-daocloud.io/daocloud}
-CACHE=$4
+CACHE=${4:- }
 
 
 [ -z "$DRBD_VER" ] && echo "Need a DRBD version !" && exit 1
