@@ -27,11 +27,17 @@ jobs:
       with:
         image: tonistiigi/binfmt:latest
         platforms: all
+
     - name: Available platforms
       run: echo ${{ steps.qemu.outputs.platforms }}
 
+    - name: Configure Docker
+      run: |
+        sudo cp -vf docker_daemon.json /etc/docker/daemon.json
+        sudo systemctl restart docker
+
     - name: Build shipper images
-      run: make shipper CACHE=--no-cache REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
+      run: make shipper REG=ghcr.io/$( echo ${{ github.repository_owner }} | tr 'A-Z' 'a-z' )
 
     - name: Login registry
       run: |

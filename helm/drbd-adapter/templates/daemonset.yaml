@@ -29,12 +29,10 @@ spec:
         {{- range $index, $node := (lookup "v1" "Node" "" "").items }}
           {{- $osImage := lower $node.status.nodeInfo.osImage }}
           {{- with . -}}
-            {{- if regexMatch "(red hat enterprise|centos|almalinux|rocky linux) .*7" $osImage }}
+            {{- if regexMatch "(red hat enterprise|centos) .*7" $osImage }}
               {{- $distros = append $distros "rhel7" }}
-            {{- else if regexMatch "(red hat enterprise|centos|almalinux|rocky linux) .*8" $osImage }}
+            {{- else if regexMatch "(red hat enterprise|centos) .*8" $osImage }}
               {{- $distros = append $distros "rhel8" }}
-            {{- else if regexMatch "(red hat enterprise|centos|almalinux|rocky linux) .*9" $osImage }}
-              {{- $distros = append $distros "rhel9" }}
             {{- else if regexMatch "ubuntu .*18" $osImage }}
               {{- $distros = append $distros "bionic" }}
             {{- else if regexMatch "ubuntu .*20" $osImage }}

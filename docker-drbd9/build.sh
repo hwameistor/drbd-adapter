@@ -3,8 +3,6 @@
 DRBD_VER=${1:-9.0.32-1}
 ARCH=${2:-linux/amd64}
 REG=${3:-daocloud.io/daocloud}
-CACHE=${4:- }
-
 
 [ -z "$DRBD_VER" ] && echo "Need a DRBD version !" && exit 1
 
@@ -18,17 +16,15 @@ cp -vf drbd-${DRBD_VER}.tar.gz drbd.tar.gz
 
 echo $ARCH | sed "s#,# #g"
 
-shift 4
+shift 3
 for i in $@; do
     df="Dockerfile.${i}"
     [ -f "$df" ] || continue
     for a in ${ARCH//,/ }; do
         sed "s/^ENV DRBD_VERSION.*/ENV DRBD_VERSION ${DRBD_VER}/" "$df" | \
         docker build . -f - \
-            ${CACHE} \
             --platform $a \
             --progress tty \
-            --build-arg ARCH=${ARCH} \
             -t ${REG}/drbd9-${i##*.}:v${DRBD_VER}_${a/\//-} \
         || exit 1
     done
