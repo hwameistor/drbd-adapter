@@ -29,12 +29,11 @@ update_chart:
 
 drbd9:
 	 cd docker-drbd9 && \
-	 ./build.sh $(DRBD_VER) $(ARCH) $(REG) $(CACHE) $(IMG)
+	 ./build.sh $(DRBD_VER) $(ARCH) $(REG) $(IMG)
 
 compiler-centos7:
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
 		docker build docker-shipper/ -f docker-shipper/Dockerfile.shipper \
-			$(CACHE) \
 			--platform $$a \
 			--progress tty \
 			--target compiler-centos7 \
@@ -45,7 +44,6 @@ compiler-centos7:
 compiler-centos8:
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
 		docker build docker-shipper/ -f docker-shipper/Dockerfile.shipper \
-			$(CACHE) \
 			--platform $$a \
 			--progress tty \
 			--target compiler-centos8 \
@@ -56,7 +54,6 @@ compiler-centos8:
 compiler-utils:
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
 		docker build docker-shipper/ -f docker-shipper/Dockerfile.shipper \
-			$(CACHE) \
 			--platform $$a \
 			--progress tty \
 			--target compiler-utils \
@@ -69,7 +66,6 @@ compiler-utils:
 shipper: update_chart
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
 		docker build docker-shipper/ -f docker-shipper/Dockerfile.shipper \
-			$(CACHE) \
 			--platform $$a \
 			--progress tty \
 			--build-arg DRBD_VER=$(DRBD_VER) \
