@@ -4,6 +4,6 @@ description: A DRBD kernel loader that auto-adapts OS distros
 
 type: application
 
-version: v0.3.5
+version: v0.3.6
 
 appVersion: v9.0.32
