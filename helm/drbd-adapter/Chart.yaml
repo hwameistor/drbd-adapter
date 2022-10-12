@@ -15,7 +15,7 @@ type: application
 # This is the chart version: 0.3.4
 # to the chart and its templates, including the app version: 0.3.4
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.3.4
+version: 0.3.5
 
 # This is the version: 0.3.4
 # incremented each time you make changes to the application. Versions are not expected to

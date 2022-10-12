@@ -102,7 +102,7 @@ RUN set -x && \
     find ./user -type f -executable -name 'drbd[a-z]*' -exec mv -v {} /utils/ \; 
 
 # Create shipper
-FROM busybox
+FROM alpine
 
 ARG DRBD_VER
 

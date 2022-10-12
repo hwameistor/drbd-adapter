@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 ROOT_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-CHART_VER ?= 0.3.4
+CHART_VER ?= 0.3.5
 DRBD_VER ?= 9.0.32-1# another tested value is: 9.1.11
 DRBD_UTILS_VER ?= 9.12.1# another tested value is: 9.21.4
 

@@ -21,11 +21,6 @@ upgrade: "no"
 # by default check hostname: (yes|no)
 checkHostname: "yes"
 
-# only apply to "deployKind: job"
-# by default NOT deploying on masters (yes|no)
-deployOnMasters: "no"
-
-# only apply to "deployKind: daemonset"
 # by default drop binary files to the host: (yes|no), 
 drop: "yes"
 
@@ -39,3 +34,9 @@ affinity:
           operator: DoesNotExist
         - key: node-role.kubernetes.io/control-plane
           operator: DoesNotExist
+
+# only apply to "deployKind: job"
+# by default NOT deploying on masters (yes|no)
+deployOnMasters: "no"
+# by default NOT using Affinity (yes|no)
+useAffinity: "no"

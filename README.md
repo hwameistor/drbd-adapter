@@ -186,11 +186,11 @@ By default, master nodes are avoided. To deploy on master nodes, modify `values.
 
 #### DaemonSet
 
-Remove `nodeAffinity`
+Set in  `nodeAffinity: {}` in `values.yaml`
 
 #### Job
 
-Set `deployOnMasters: "yes"`, and then Remove `nodeAffinity`
+Set `deployOnMasters: "yes"`
 
 ## Common Issues
 
@@ -208,4 +208,4 @@ Cause:
     Secure Boot is not supported yet
 
 Solution:
-    Future release will handle kernel module signing.
+    Future releases will handle kernel module signing.

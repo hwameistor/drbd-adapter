@@ -17,6 +17,8 @@
 {{ else if regexMatch "ubuntu .*22" $osImage }}
   {{ $distro = "jammy" }}
   {{ $tag = "v9.1.11" }}
+{{ else if regexMatch "kylin .*v10" $osImage }}
+  {{ $distro = "kylin10" }}
 {{ end }}
 {{ if and (ne $.Values.deployOnMasters "yes") (or (hasKey $node.metadata.labels "node-role.kubernetes.io/master") (hasKey $node.metadata.labels "node-role.kubernetes.io/control-plane"))}}
 {{ else }}
@@ -139,9 +141,11 @@ spec:
         hostPath:
           path: /etc/sysconfig/modules
           type: DirectoryOrCreate
+      {{ if eq $.Values.useAffinity "yes" }}
       affinity:
         nodeAffinity:
 		    {{- toYaml $.Values.affinity.nodeAffinity | nindent 10 }}
+      {{ end }}
 {{ end }}
 {{ end }}
 {{ end }}
