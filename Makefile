@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 ROOT_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-CHART_VER ?= 0.3.5
+CHART_VER ?= 0.3.6
 DRBD_VER ?= 9.0.32-1# another tested value is: 9.1.11
 DRBD_UTILS_VER ?= 9.12.1# another tested value is: 9.21.4
 
@@ -19,11 +19,11 @@ IMG ?= shipper rhel7 rhel8 rhel9 bionic focal jammy kylin10
 # Default test registry
 REG ?= daocloud.io/daocloud
 
-update_chart: 
+update_chart_ver: 
 	if sed --version | grep -iw gnu; then \
-		sed -i 's/version:.*/version: $(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
+		sed -i 's/version:.*/version: v$(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
 	else \
-		sed -i '' 's/version:.*/version: $(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
+		sed -i '' 's/version:.*/version: v$(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
 	fi 
 	grep ^version ./helm/drbd-adapter/Chart.yaml
 
@@ -63,7 +63,7 @@ compiler-utils:
 			-t $(REG)/drbd9-compiler-utils:v$(DRBD_VER)_$${a/\//-}; \
 	done
 
-shipper: update_chart
+shipper: update_chart_ver
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
 		docker build docker-shipper/ -f docker-shipper/Dockerfile.shipper \
 			--platform $$a \
@@ -71,7 +71,7 @@ shipper: update_chart
 			--build-arg DRBD_VER=$(DRBD_VER) \
 			--build-arg DRBD_UTILS_VER=$(DRBD_UTILS_VER) \
 			--build-arg DRBD_HEADERS_SHA=$(DRBD_HEADERS_SHA) \
-			-t $(REG)/drbd9-shipper:v$(DRBD_VER)_$(CHART_VER)_$${a/\//-}; \
+			-t $(REG)/drbd9-shipper:v$(DRBD_VER)_v$(CHART_VER)_$${a/\//-}; \
 	done
 
 cleanup:
@@ -88,7 +88,7 @@ test-docker:
 	docker volume rm pkgs || true
 	docker run --rm \
 	    -v pkgs:/pkgs \
-		drbd9-shipper:v$(DRBD_VER)_$(CHART_VER)
+		drbd9-shipper:v$(DRBD_VER)_v$(CHART_VER)
 	docker run --rm \
 		-v pkgs:/pkgs \
 		--privileged \
@@ -112,7 +112,7 @@ test:
 push:
 	set -x; \
 	for i in $(IMG); do \
-		[ $$i = "shipper" ] && ver=$(DRBD_VER)_$(CHART_VER) || ver=$(DRBD_VER); \
+		[ $$i = "shipper" ] && ver=$(DRBD_VER)_v$(CHART_VER) || ver=$(DRBD_VER); \
 		docker manifest rm $(REG)/drbd9-$$i:v$${ver}; \
 			for a in $(shell echo $(ARCH) | tr ',' ' ' ); do \
 				docker push $(REG)/drbd9-$$i:v$${ver}_$${a/\//-} || \
