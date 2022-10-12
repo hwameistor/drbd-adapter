@@ -71,7 +71,7 @@ shipper: update_chart_ver
 			--build-arg DRBD_VER=$(DRBD_VER) \
 			--build-arg DRBD_UTILS_VER=$(DRBD_UTILS_VER) \
 			--build-arg DRBD_HEADERS_SHA=$(DRBD_HEADERS_SHA) \
-			-t $(REG)/drbd9-shipper:v$(DRBD_VER)_$(CHART_VER)_$${a/\//-}; \
+			-t $(REG)/drbd9-shipper:v$(DRBD_VER)_v$(CHART_VER)_$${a/\//-}; \
 	done
 
 cleanup:
@@ -88,7 +88,7 @@ test-docker:
 	docker volume rm pkgs || true
 	docker run --rm \
 	    -v pkgs:/pkgs \
-		drbd9-shipper:v$(DRBD_VER)_$(CHART_VER)
+		drbd9-shipper:v$(DRBD_VER)_v$(CHART_VER)
 	docker run --rm \
 		-v pkgs:/pkgs \
 		--privileged \
@@ -112,7 +112,7 @@ test:
 push:
 	set -x; \
 	for i in $(IMG); do \
-		[ $$i = "shipper" ] && ver=$(DRBD_VER)_$(CHART_VER) || ver=$(DRBD_VER); \
+		[ $$i = "shipper" ] && ver=$(DRBD_VER)_v$(CHART_VER) || ver=$(DRBD_VER); \
 		docker manifest rm $(REG)/drbd9-$$i:v$${ver}; \
 			for a in $(shell echo $(ARCH) | tr ',' ' ' ); do \
 				docker push $(REG)/drbd9-$$i:v$${ver}_$${a/\//-} || \
@@ -123,4 +123,4 @@ push:
 		docker manifest inspect $(REG)/drbd9-$$i:v$${ver}; \
 	done
 
-all: update_chart_ver drbd9 shipper push
+all: drbd9 shipper push
