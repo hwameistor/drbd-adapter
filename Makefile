@@ -63,7 +63,7 @@ compiler-utils:
 			-t $(REG)/drbd9-compiler-utils:v$(DRBD_VER)_$${a/\//-}; \
 	done
 
-shipper: update_chart
+shipper: update_chart_ver
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
 		docker build docker-shipper/ -f docker-shipper/Dockerfile.shipper \
 			--platform $$a \
