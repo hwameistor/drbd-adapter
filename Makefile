@@ -19,11 +19,11 @@ IMG ?= shipper rhel7 rhel8 rhel9 bionic focal jammy kylin10
 # Default test registry
 REG ?= daocloud.io/daocloud
 
-update_chart: 
+update_chart_ver: 
 	if sed --version | grep -iw gnu; then \
-		sed -i 's/version:.*/version: $(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
+		sed -i 's/version:.*/version: v$(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
 	else \
-		sed -i '' 's/version:.*/version: $(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
+		sed -i '' 's/version:.*/version: v$(CHART_VER)/' ./helm/drbd-adapter/Chart.yaml; \
 	fi 
 	grep ^version ./helm/drbd-adapter/Chart.yaml
 
@@ -123,4 +123,4 @@ push:
 		docker manifest inspect $(REG)/drbd9-$$i:v$${ver}; \
 	done
 
-all: drbd9 shipper push
+all: update_chart_ver drbd9 shipper push

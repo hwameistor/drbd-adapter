@@ -62,7 +62,7 @@ fi
 if [[ $LB_DROP == yes ]]; then
 
    # drop modules
-   if [[ $host_dist =~ rhel ]]; then
+   if [[ $host_dist =~ rhel|kylin10 ]]; then
       KODIR="/lib/modules/$(uname -r)/extra/drbd"
    elif [[ $host_dist =~ bionic|focal|jammy ]]; then
       KODIR="/lib/modules/$(uname -r)/updates/dkms/drbd"
