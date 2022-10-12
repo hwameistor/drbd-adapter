@@ -190,7 +190,7 @@ Remove `nodeAffinity`
 
 #### Job
 
-Set `deployOnMasters: "no"`
+Set `deployOnMasters: "yes"`, and then Remove `nodeAffinity`
 
 ## Common Issues
 
