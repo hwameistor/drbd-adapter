@@ -31,11 +31,12 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 ## OS Distro Support
 
-* RHEL/CentOS/RockyLinux/AlmaLinux 7
-* RHEL/CentOS/RockyLinux/AlmaLinux 8
-* Kylin V10
-* Ubuntu 18 Bionic
-* Ubuntu 20 Focal
+x86
+* CentOS 7.6/7.7/7.9
+* Ubuntu 18.04/22.04
+
+aarch64
+* Kylin V10 
 
 ### Not Supported, but for test only
 
