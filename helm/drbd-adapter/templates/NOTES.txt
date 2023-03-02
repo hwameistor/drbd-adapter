@@ -10,10 +10,11 @@ Supported Arch:
     aarch64
 
 Supported OS Distros: 
-    RHEL/CentOS 7
-    RHEL/CentOS 8
-    Ubuntu 18 Bionic
-    Ubuntu 20 Focal
+x86
+    CentOS 7.6/7.7/7.9
+    Ubuntu 18.04/22.04
+aarch64
+    Kylin V10 
     
 Not Supported, but for test only:
     Ubuntu 22 Jammy (* will install DRBD v9.1.11 )
