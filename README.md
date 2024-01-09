@@ -5,10 +5,12 @@
 `entrypoint.adapter.sh` wraps around the official containerized DRBD kernel module loader script `entry.sh` to achieve the following goals:
 
 1. Adapt host OS type automatically;
-2. Drop `drbd kernel modules` and `drbd-utils` to the host;
-3. Use pre-built kernel modules for stock RHEL/CentOS hosts;
-4. Use dynamically built kernel modules for un-stock RHEL/CentOS hosts and Ubuntu hosts;
-5. Provide two deployment modes: Job (default) and DaemonSet
+2. Drop `drbd kernel modules` and `drbd-utils` , kmd-drbd.rpm to the host;
+3. Install drbd using the rpm consistent with the kernel version for RHEL/CentOS hosts;
+4. If the third step fails, Start use pre-built kernel modules for stock RHEL/CentOS hosts;
+5. If the third step fails,Use dynamically built kernel modules for un-stock RHEL/CentOS hosts；
+6. Use dynamically built kernel modules for Ubuntu hosts;
+7. Provide two deployment modes: Job (default) and DaemonSet
 
 ![flowchart](flowchart.drawio.svg)
 
@@ -23,7 +25,7 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 
 * kernel module v9.1.8 with utils v9.12.1
 * (EXPERIMENTAL!) kernel module v9.1.11 with utils v9.21.4
-  
+
 ## Arch Support
 
 * x86_64
@@ -32,10 +34,12 @@ LINBIT/drbd <https://github.com/LINBIT/drbd/tree/drbd-9.1/docker>
 ## OS Distro Support
 
 x86
+
 * CentOS 7.6/7.7/7.9
 * Ubuntu 18.04/22.04
 
 aarch64
+
 * Kylin V10 
 
 ### Not Supported, but for test only
@@ -43,7 +47,7 @@ aarch64
 * Ubuntu 22 Jammy ( experimental: will always install DRBD v9.1.11 )
 
 ### Secure Boot
-    
+
     NOT YET SUPPORTED
 
 ## Kubernetes Version
@@ -65,7 +69,7 @@ $ apt-get install -y linux-headers-$(uname -r)
 ```
 
 > **Note:**
->
+> 
 > For major releases of stock RHEL/CentOS 7 and 8, `kernel-devel` is not needed
 
 ### OS Distros

@@ -2,6 +2,7 @@
 {{ range $index, $node := (lookup "v1" "Node" "" "").items }}
 {{ $nodeName := $node.metadata.name }}
 {{ $osImage := lower $node.status.nodeInfo.osImage }}
+{{ $kernelVersion := lower $node.status.nodeInfo.kernelVersion }}
 {{ $tag := $.Values.drbdVersion  }}
 {{ $distro := "unsupported" }}
 {{ if regexMatch "(red hat enterprise|centos|almalinux|rocky linux) .*7" $osImage }}
@@ -55,7 +56,7 @@ spec:
       - name: {{ $distro }}
         image: {{ $.Values.registry }}/drbd9-{{ $distro }}:{{ $tag }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
-        command: [ /pkgs/entrypoint.adapter.sh ]
+        command: [ /pkgs/entrypoint.adapter.sh {{ $kernelVersion }}]
         securityContext:
           privileged: true
         env:
