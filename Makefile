@@ -67,7 +67,7 @@ shipper: update_chart_ver
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
 		docker build docker-shipper/ -f docker-shipper/Dockerfile.shipper \
 			--platform $$a \
-			--progress tty \
+			--progress auto \
 			--build-arg DRBD_VER=$(DRBD_VER) \
 			--build-arg DRBD_UTILS_VER=$(DRBD_UTILS_VER) \
 			--build-arg DRBD_HEADERS_SHA=$(DRBD_HEADERS_SHA) \
