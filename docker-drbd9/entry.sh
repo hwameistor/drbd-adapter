@@ -3,6 +3,7 @@
 SIGN_KEY=https://packages.linbit.com/package-signing-pubkey.asc
 PKGS=/pkgs
 HOSTRELEASE=/etc/host-release
+RPMDIR=/pkgs/drbd-rpms/
 
 die() {
 	>&2 echo
@@ -235,6 +236,40 @@ if grep -q '^drbd ' /proc/modules; then
 
 	exit 0
 fi
+
+result=$(lbdisttool.py --os-release $HOSTRELEASE -l || echo "")
+substr="${result:0:3}"
+if [ "$substr" != "deb" ]; then
+    if [ -z "$OS_KERNEL" ]; then
+      debug "The system parameters are obtained successfully （OS_KERNEL）"
+      exit 1
+    fi
+
+    drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
+    utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
+    if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
+      utils_rpm="$RPMDIR$utils_rpm"
+      drbd_rpm="$RPMDIR$drbd_rpm"
+      rpm -ivh  "$utils_rpm"
+      rpm -ivh  "$drbd_rpm"
+      exit_code=$?
+      if [ $exit_code -eq 0 ]; then
+        modprobe drbd
+        modprobe drbd_transport_tcp
+        exit_code=$?
+        if [ $exit_code -eq 0 ]; then
+          exit 0
+        else
+          debug "modprobe err_code: $exit_code"
+        fi
+      else
+        debug "$utils_rpm，$drbd_rpm"
+        debug "rmp err_code: $exit_code"
+      fi
+    else debug "There is no corresponding kernel version rpm package or drbd-utils rpm package"
+    fi
+fi
+
 
 pkgdir=/tmp/pkg
 kodir=/tmp/ko

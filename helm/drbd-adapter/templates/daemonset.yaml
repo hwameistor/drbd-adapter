@@ -1,4 +1,7 @@
 {{ if eq $.Values.deployKind "daemonset" }}
+{{ range $index, $node := (lookup "v1" "Node" "" "").items }}
+{{ $nodeName := $node.metadata.name }}
+{{ $kernelVersion := lower $node.status.nodeInfo.kernelVersion }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -52,7 +55,7 @@ spec:
       - name: {{ $dist }}
         image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $tag }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
-        command: [ /pkgs/entrypoint.adapter.sh ]
+        command: [ /pkgs/entrypoint.adapter.sh {{ $kernelVersion }} ]
         securityContext:
           privileged: true
         env:
