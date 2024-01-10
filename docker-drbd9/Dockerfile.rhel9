@@ -24,7 +24,8 @@ RUN dnf -y update-minimal --security --sec-severity=Important --sec-severity=Cri
 	pip-3 install https://github.com/LINBIT/python-lbdist/archive/master.tar.gz
 
 COPY --from=extrapkgs /pkgs /pkgs
-RUN dnf install -y /pkgs/*.rpm # !lbbuild
+#RUN dnf install -y /pkgs/*.rpm # !lbbuild
+RUN dnf install -y --skip-broken /pkgs/*.rpm # !lbbuild
 # or
 # =lbbuild RUN curl -fsSL https://nexus.at.linbit.com/repository/lbbuild/from_rhel_repos.sh | bash -s -- elfutils-libelf-devel
 
