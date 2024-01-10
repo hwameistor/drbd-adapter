@@ -33,7 +33,8 @@ RUN alternatives --set python /usr/bin/python3 && cd /tmp && wget https://github
 	rm -rf python-lbdist-master master.tar.gz
 	
 COPY --from=extrapkgs /pkgs /pkgs
-RUN yum install -y /pkgs/*.rpm # !lbbuild
+#RUN yum install -y /pkgs/*.rpm # !lbbuild
+RUN yum install -y --skip-broken /pkgs/*.rpm
 # or
 # =lbbuild RUN curl -fsSL https://nexus.at.linbit.com/repository/lbbuild/from_rhel_repos.sh | bash -s -- elfutils-libelf-devel
 
