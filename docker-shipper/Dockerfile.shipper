@@ -118,4 +118,5 @@ COPY ../drbd-rpms /pkgs
 
 RUN chmod -v +x /files/entrypoint.adapter.sh /files/drbd.modules
 
+#mv /files/* to pkgs/*
 CMD mv -vf /files/* /pkgs/
