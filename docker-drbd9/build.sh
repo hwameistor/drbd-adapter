@@ -17,6 +17,7 @@ cp -vf drbd-${DRBD_VER}.tar.gz drbd.tar.gz
 echo $ARCH | sed "s#,# #g"
 
 shift 3
+#--progress auto  --progress plain  --progress tty
 for i in $@; do
     df="Dockerfile.${i}"
     [ -f "$df" ] || continue

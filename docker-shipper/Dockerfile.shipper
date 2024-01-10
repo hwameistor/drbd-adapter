@@ -114,8 +114,6 @@ COPY --from=compiler-utils /utils /files/utils
 
 COPY . /files/
 
-COPY ../drbd-rpms /pkgs
-
 RUN chmod -v +x /files/entrypoint.adapter.sh /files/drbd.modules
 
 CMD mv -vf /files/* /pkgs/
