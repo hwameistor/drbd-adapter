@@ -24,7 +24,7 @@ for i in $@; do
         sed "s/^ENV DRBD_VERSION.*/ENV DRBD_VERSION ${DRBD_VER}/" "$df" | \
         docker build . -f - \
             --platform $a \
-            --progress tty \
+            --progress auto \
             -t ${REG}/drbd9-${i##*.}:v${DRBD_VER}_${a/\//-} \
         || exit 1
     done
