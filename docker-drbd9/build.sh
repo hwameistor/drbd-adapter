@@ -17,6 +17,7 @@ cp -vf drbd-${DRBD_VER}.tar.gz drbd.tar.gz
 echo $ARCH | sed "s#,# #g"
 
 shift 3
+#--progress auto  --progress plain  --progress tty
 for i in $@; do
     df="Dockerfile.${i}"
     [ -f "$df" ] || continue
@@ -24,7 +25,7 @@ for i in $@; do
         sed "s/^ENV DRBD_VERSION.*/ENV DRBD_VERSION ${DRBD_VER}/" "$df" | \
         docker build . -f - \
             --platform $a \
-            --progress tty \
+            --progress auto \
             -t ${REG}/drbd9-${i##*.}:v${DRBD_VER}_${a/\//-} \
         || exit 1
     done
