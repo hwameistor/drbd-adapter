@@ -258,6 +258,7 @@ if [ "$substr" != "deb" ]; then
         modprobe drbd_transport_tcp
         exit_code=$?
         if [ $exit_code -eq 0 ]; then
+          export DRBD_RMP_INSTALL='yes'
           exit 0
         else
           debug "modprobe err_code: $exit_code"
