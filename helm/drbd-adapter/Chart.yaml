@@ -1,6 +1,6 @@
 apiVersion: v2
 name: drbd-adapter
-description: A DRBD kernel loader that auto-adapts OS distros
+description: A DRBD kernel loader that auto-adapts OS distros.
 
 type: application
 
