@@ -52,6 +52,8 @@ fi
 
 ## Main Logic
 # If no shipped module is found, then compile from source
+export DRBD_EXIST='no'
+echo "OS_KERNEL:$1"
 export OS_KERNEL=$1
 if LB_HOW=shipped_modules bash -x /entry.sh ; then
    echo "Successfully loaded shipped module"
@@ -59,6 +61,8 @@ elif LB_HOW=compile bash -x /entry.sh ; then
    echo "Successfully loaded compiled module"
 fi
 
+echo "DRBD_EXIST:$DRBD_EXIST"
+echo "DRBD_RMP_INSTALL:$DRBD_RMP_INSTALL"
 if [[ $DRBD_RMP_INSTALL == 'yes' ]];then
   echo "Successfully installed rbd using rpm package"
   exit 0
