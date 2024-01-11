@@ -1,5 +1,6 @@
 # x86_64
-rhel8.6 4.18.0-372.9.1  https://download.rockylinux.org/pub/rocky/8/BaseOS/x86_64/os/Packages/k/kernel-devel-4.18.0-372.9.1.el8.x86_64.rpm
+#rhel8.6 4.18.0-372.9.1  https://download.rockylinux.org/pub/rocky/8/BaseOS/x86_64/os/Packages/k/kernel-devel-4.18.0-372.9.1.el8.x86_64.rpm
+rhel8.6 4.18.0-513.5.1  https://download.rockylinux.org/pub/rocky/8/BaseOS/x86_64/os/Packages/k/kernel-devel-4.18.0-513.5.1.el8_9.x86_64.rpm
 rhel8.5 4.18.0-348      https://vault.centos.org/8.5.2111/BaseOS/x86_64/os/Packages/kernel-devel-4.18.0-348.el8.x86_64.rpm
 rhel8.4 4.18.0-305.3.1  https://vault.centos.org/8.4.2105/BaseOS/x86_64/os/Packages/kernel-devel-4.18.0-305.3.1.el8.x86_64.rpm
 rhel8.3 4.18.0-240      https://vault.centos.org/8.3.2011/BaseOS/x86_64/os/Packages/kernel-devel-4.18.0-240.el8.x86_64.rpm
@@ -8,7 +9,7 @@ rhel8.1 4.18.0-147      https://vault.centos.org/8.1.1911/BaseOS/x86_64/os/Packa
 rhel8.0 4.18.0-80       https://vault.centos.org/8.0.1905/BaseOS/x86_64/os/Packages/kernel-devel-4.18.0-80.el8.x86_64.rpm
 
 # aarch64
-rhel8.6 4.18.0-372.9.1  https://download.rockylinux.org/pub/rocky/8/BaseOS/aarch64/os/Packages/k/kernel-devel-4.18.0-372.9.1.el8.aarch64.rpm
+rhel8.6 4.18.0-513.5.1  https://download.rockylinux.org/pub/rocky/8/BaseOS/aarch64/os/Packages/k/kernel-devel-4.18.0-513.5.1.el8_9.aarch64.rpm
 rhel8.5 4.18.0-348      https://vault.centos.org/8.5.2111/BaseOS/aarch64/os/Packages/kernel-devel-4.18.0-348.el8.aarch64.rpm
 rhel8.4 4.18.0-305.3.1  https://vault.centos.org/8.4.2105/BaseOS/aarch64/os/Packages/kernel-devel-4.18.0-305.3.1.el8.aarch64.rpm
 rhel8.3 4.18.0-240      https://vault.centos.org/8.3.2011/BaseOS/aarch64/os/Packages/kernel-devel-4.18.0-240.el8.aarch64.rpm
