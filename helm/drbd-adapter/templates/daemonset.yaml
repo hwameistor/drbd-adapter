@@ -55,7 +55,9 @@ spec:
       - name: {{ $dist }}
         image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $tag }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
-        command: [ /pkgs/entrypoint.adapter.sh {{ $kernelVersion }} ]
+        command: 
+	  - /pkgs/entrypoint.adapter.sh
+          - {{ $kernelVersion }}
         securityContext:
           privileged: true
         env:
@@ -167,4 +169,5 @@ spec:
       affinity:
         nodeAffinity:
 		    {{- toYaml $.Values.affinity.nodeAffinity | nindent 10 }}
+{{- end }}
 {{- end }}
