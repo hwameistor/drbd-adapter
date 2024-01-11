@@ -58,7 +58,7 @@ if LB_HOW=shipped_modules bash -x /entry.sh ; then
 elif LB_HOW=compile bash -x /entry.sh ; then
    echo "Successfully loaded compiled module"
 fi
-
+#If the installation through rpm is successful, exit directly.
 if [[ $DRBD_RMP_INSTALL == 'yes' ]];then
   echo "Successfully installed rbd using rpm package"
   exit 0
