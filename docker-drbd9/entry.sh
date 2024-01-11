@@ -233,7 +233,7 @@ if grep -q '^drbd ' /proc/modules; then
 
 	[[ $LB_FAIL_IF_USERMODE_HELPER_NOT_DISABLED == yes ]] && ! grep -qw disabled /sys/module/drbd/parameters/usermode_helper &&
 		die "- load the drbd module on the host with the module parameter 'usermode_helper=disabled' OR\n- let this container handle that for you by not already loading the drbd module on the host"
-
+  export DRBD_EXIST='yes'
 	exit 0
 fi
 

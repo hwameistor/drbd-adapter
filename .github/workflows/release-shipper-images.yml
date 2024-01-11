@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
     - 'docker-shipper/*'
+    - "helm/drbd-adapter/Chart.yaml"
     - '.github/workflow/release-shipper-images.yml'
 
 jobs:

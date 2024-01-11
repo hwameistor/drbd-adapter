@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
     - 'docker-drbd9/**'
+    - "helm/drbd-adapter/Chart.yaml"
     - '.github/workflow/release-drbd9-images.yml'
 
 jobs:
