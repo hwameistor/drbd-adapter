@@ -168,3 +168,4 @@ spec:
         nodeAffinity:
 		    {{- toYaml $.Values.affinity.nodeAffinity | nindent 10 }}
 {{- end }}
+{{- end }}
