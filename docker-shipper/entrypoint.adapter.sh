@@ -63,6 +63,7 @@ fi
 
 echo "DRBD_EXIST:$DRBD_EXIST"
 echo "DRBD_RMP_INSTALL:$DRBD_RMP_INSTALL"
+#If the installation through rpm is successful, exit directly.
 if [[ $DRBD_RMP_INSTALL == 'yes' ]];then
   echo "Successfully installed rbd using rpm package"
   exit 0
