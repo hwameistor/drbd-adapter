@@ -59,6 +59,11 @@ elif LB_HOW=compile bash -x /entry.sh ; then
    echo "Successfully loaded compiled module"
 fi
 
+if [[ $DRBD_RMP_INSTALL == 'yes' ]];then
+  echo "Successfully installed rbd using rpm package"
+  exit 0
+fi
+
 # Drop modules to the host so it can independently load from OS
 if [[ $LB_DROP == yes ]]; then
 
