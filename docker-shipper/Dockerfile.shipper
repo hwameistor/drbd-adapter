@@ -8,7 +8,7 @@ RUN yum install -y --nogpgcheck wget kernel-abi-whitelists gcc flex glibc-devel 
 # Install kernel-devels of each CentOS 7 major release
 # Must rpm install a kernel-devel for prereq
 COPY kernel-devels.centos7 /pkgs/
-RUN echo "centos7 arch:$(arch) "
+RUN echo "centos7 arch:$(arch)"
 RUN cat /pkgs/kernel-devels.centos7 | grep -v ^# | grep -w $(arch) | awk '{print $1}' | xargs -tI % mkdir -vp /pkgs/% && \
     cat /pkgs/kernel-devels.centos7 | grep -v ^# | grep -w $(arch) | awk '{print $3}' | xargs -tI % wget % --no-check-certificate && \
     ls -1 *.rpm | head -1 | xargs -tI % rpm -ivh % --nopreun --nopostun --force && \
@@ -41,10 +41,10 @@ RUN yum install -y --nogpgcheck wget elfutils-libelf-devel kernel-rpm-macros ker
 # Install kernel-devels of each CentOS 7 major release
 # Must rpm install a kernel-devel for prereq
 COPY kernel-devels.centos8 /pkgs/
-RUN echo "centos8 arch:$(arch) "
+RUN echo "centos8 arch:$(arch)"
 RUN cat /pkgs/kernel-devels.centos8 | grep -v ^# | grep $(arch) |  awk '{print $1}' | xargs -tI % mkdir -vp /pkgs/% && \
-    #sed "s/x86_64/$(arch)/g" /pkgs/kernel-devels.centos8 | grep -v ^# | awk '{print $3}' | xargs -tI % wget % --no-check-certificate && \
-    cat /pkgs/kernel-devels.centos8 | grep -v ^# | grep -w $(arch) | awk '{print $3}' | xargs -tI % wget % --no-check-certificate && \
+    sed "s/x86_64/$(arch)/g" /pkgs/kernel-devels.centos8 | grep -v ^# | awk '{print $3}' | xargs -tI % wget % --no-check-certificate && \
+    #cat /pkgs/kernel-devels.centos8 | grep -v ^# | grep -w $(arch) | awk '{print $3}' | xargs -tI % wget % --no-check-certificate && \
     ls -1 *.rpm | head -1 | xargs -tI % rpm -ivh % --nopreun --nopostun --force && \
     ls -1 *.rpm | tail -n+2 | xargs -tI % sh -xc 'rpm2cpio % | cpio -idm' && \
     rm -vf *.rpm
