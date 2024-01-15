@@ -248,8 +248,6 @@ if [ "$substr" != "deb" ]; then
     drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
     utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
-      utils_rpm="$RPMDIR$utils_rpm"
-      drbd_rpm="$RPMDIR$drbd_rpm"
       rpm -ivh  "$utils_rpm"
       rpm -ivh  "$drbd_rpm"
       exit_code=$?
