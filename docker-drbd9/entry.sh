@@ -248,12 +248,15 @@ if [ "$substr" != "deb" ]; then
     drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
     utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
-      nsenter -t 1 -n -u -i -m --rpm -ivh  "$utils_rpm"
-      nsenter -t 1 -n -u -i -m --rpm -ivh  "$drbd_rpm"
+      nsenter -t 1 -n -u -i -m -- cp $drbd_rpm /pkgs_root/drbd.rpm
+      nsenter -t 1 -n -u -i -m -- cp $utils_rpm /pkgs_root/drbd_utils.rpm
+      nsenter -t 1 -n -u -i -m -- ls /pkgs_root
+      nsenter -t 1 -n -u -i -m -- rpm -ivh  /pkgs_root/drbd.rpm
+      nsenter -t 1 -n -u -i -m -- rpm -ivh  /pkgs_root/drbd_utils.rpm
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
-        nsenter -t 1 -n -u -i -m --modprobe drbd
-        nsenter -t 1 -n -u -i -m --modprobe drbd_transport_tcp
+        nsenter -t 1 -n -u -i -m -- modprobe drbd
+        nsenter -t 1 -n -u -i -m -- modprobe drbd_transport_tcp
         exit_code=$?
         if [ $exit_code -eq 0 ]; then
 	  #Notify shipper that installation is complete
@@ -272,12 +275,15 @@ else
     drbd_deb=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
     utils_deb=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
-      nsenter -t 1 -n -u -i -m --apt install -y drbd_deb
-      nsenter -t 1 -n -u -i -m --apt install -y utils_deb
+      nsenter -t 1 -n -u -i -m -- cp $drbd_deb /pkgs_root/drbd.deb
+      nsenter -t 1 -n -u -i -m -- cp $utils_deb /pkgs_root/drbd_utils.deb
+      nsenter -t 1 -n -u -i -m -- apt install -y /pkgs_root/drbd.deb
+      nsenter -t 1 -n -u -i -m -- apt install -y /pkgs_root/drbd_utils.deb
+
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
-        nsenter -t 1 -n -u -i -m --modprobe drbd
-        nsenter -t 1 -n -u -i -m --modprobe drbd_transport_tcp
+        nsenter -t 1 -n -u -i -m -- modprobe drbd
+        nsenter -t 1 -n -u -i -m -- modprobe drbd_transport_tcp
         exit_code=$?
         if [ $exit_code -eq 0 ]; then
           export DRBD_RMP_INSTALL='yes'

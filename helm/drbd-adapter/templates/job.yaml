@@ -52,6 +52,8 @@ spec:
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
+        - name: pkgs_root
+          mountPath: /pkgs_root
       {{ if ne $distro "unsupported" }}
       - name: {{ $distro }}
         image: {{ $.Values.registry }}/drbd9-{{ $distro }}:{{ $tag }}
@@ -82,6 +84,8 @@ spec:
         {{ end }}
         - name: pkgs
           mountPath: /pkgs
+        - name: pkgs_root
+          mountPath: /pkgs_root
         - name: os-release
           mountPath: /etc/host-release
           readOnly: true
@@ -107,6 +111,9 @@ spec:
       volumes:
       - name: pkgs
         emptyDir: {}
+      - name: pkgs_root
+        hostPath:
+          path: /root
       - name: os-release
         hostPath:
           path: /etc/os-release
