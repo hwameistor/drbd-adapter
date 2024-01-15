@@ -244,7 +244,7 @@ if [ "$substr" != "deb" ]; then
       debug "The system parameters are obtained successfully （OS_KERNEL）"
       exit 1
     fi
-
+    ls "$RPMDIR"
     drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
     utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
