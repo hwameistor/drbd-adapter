@@ -37,6 +37,6 @@ affinity:
 
 # only apply to "deployKind: job"
 # by default NOT deploying on masters (yes|no)
-deployOnMasters: "no"
+deployOnMasters: "yes"
 # by default NOT using Affinity (yes|no)
 useAffinity: "no"
