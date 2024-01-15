@@ -4,6 +4,7 @@ SIGN_KEY=https://packages.linbit.com/package-signing-pubkey.asc
 PKGS=/pkgs
 HOSTRELEASE=/etc/host-release
 RPMDIR=/pkgs/drbd-rpms/
+DEBDIR=/pkgs/drbd-debs/
 
 die() {
 	>&2 echo
@@ -237,23 +238,22 @@ if grep -q '^drbd ' /proc/modules; then
 	exit 0
 fi
 
-result=$(lbdisttool.py --os-release $HOSTRELEASE -l || echo "")
-substr="${result:0:3}"
-if [ "$substr" != "deb" ]; then
-    if [ -z "$OS_KERNEL" ]; then
+if [ -z "$OS_KERNEL" ]; then
       debug "The system parameters are obtained successfully （OS_KERNEL）"
       exit 1
     fi
-    ls "$RPMDIR"
+result=$(lbdisttool.py --os-release $HOSTRELEASE -l || echo "")
+substr="${result:0:3}"
+if [ "$substr" != "deb" ]; then
     drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
     utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
-      rpm -ivh  "$utils_rpm"
-      rpm -ivh  "$drbd_rpm"
+      nsenter -t 1 -n -u -i -m --rpm -ivh  "$utils_rpm"
+      nsenter -t 1 -n -u -i -m --rpm -ivh  "$drbd_rpm"
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
-        modprobe drbd
-        modprobe drbd_transport_tcp
+        nsenter -t 1 -n -u -i -m --modprobe drbd
+        nsenter -t 1 -n -u -i -m --modprobe drbd_transport_tcp
         exit_code=$?
         if [ $exit_code -eq 0 ]; then
 	  #Notify shipper that installation is complete
@@ -267,6 +267,28 @@ if [ "$substr" != "deb" ]; then
         debug "rmp err_code: $exit_code"
       fi
     else debug "There is no corresponding kernel version rpm package or drbd-utils rpm package"
+    fi
+else
+    drbd_deb=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
+    utils_deb=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
+    if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
+      nsenter -t 1 -n -u -i -m --apt install -y drbd_deb
+      nsenter -t 1 -n -u -i -m --apt install -y utils_deb
+      exit_code=$?
+      if [ $exit_code -eq 0 ]; then
+        nsenter -t 1 -n -u -i -m --modprobe drbd
+        nsenter -t 1 -n -u -i -m --modprobe drbd_transport_tcp
+        exit_code=$?
+        if [ $exit_code -eq 0 ]; then
+          export DRBD_RMP_INSTALL='yes'
+          exit 0
+        else
+          debug "modprobe err_code: $exit_code"
+        fi
+      else
+        debug "apt install err_code: $exit_code"
+      fi
+    else debug "There is no corresponding kernel version deb package or drbd-utils deb package"
     fi
 fi
 
