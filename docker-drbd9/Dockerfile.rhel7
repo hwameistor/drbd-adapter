@@ -35,4 +35,6 @@ RUN ln -vs /usr/bin/python /usr/bin/python3 && \
 	ln -vs /usr/bin/python /usr/bin/python3.6 && \
 	yum install -y hostname && yum clean all -y
 
+RUN yum install -y util-linux
+
 ENTRYPOINT /entry.sh

@@ -53,4 +53,6 @@ RUN chmod +x /entry.sh
 # add python2 hostname
 RUN yum install -y python2 hostname && yum clean all -y
 
+RUN yum install -y util-linux
+
 ENTRYPOINT /entry.sh

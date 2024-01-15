@@ -250,13 +250,15 @@ if [ "$substr" != "deb" ]; then
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
       cp $drbd_rpm /pkgs_root/drbd.rpm
       cp $utils_rpm /pkgs_root/drbd_utils.rpm
-      nsenter -t 1 -n -u -i -m -- ls /root/
-      nsenter -t 1 -n -u -i -m -- rpm -ivh  /root/drbd.rpm
-      nsenter -t 1 -n -u -i -m -- rpm -ivh  /root/drbd_utils.rpm
+      ls  /root/
+      nsenter --version
+      nsenter --target 1 --mount --uts --ipc --net --pid ls  /root/
+      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd.rpm
+      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd_utils.rpm
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
-        nsenter -t 1 -n -u -i -m -- modprobe drbd
-        nsenter -t 1 -n -u -i -m -- modprobe drbd_transport_tcp
+        nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd
+        nsenter --target 1 --mount --uts --ipc --net --pid modprobe drbd_transport_tcp
         exit_code=$?
         if [ $exit_code -eq 0 ]; then
 	  #Notify shipper that installation is complete
@@ -277,12 +279,13 @@ else
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
       cp $drbd_deb /pkgs_root/drbd.deb
       cp $utils_deb /pkgs_root/drbd_utils.deb
-      nsenter -t 1 -n -u -i -m -- apt install -y /root/drbd.deb
-      nsenter -t 1 -n -u -i -m -- apt install -y /root/drbd_utils.deb
+      nsenter --target 1 --mount --uts --ipc --net --pid ls  /root/
+      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd.deb
+      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd_utils.deb
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
-        nsenter -t 1 -n -u -i -m -- modprobe drbd
-        nsenter -t 1 -n -u -i -m -- modprobe drbd_transport_tcp
+        nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd
+        nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd_transport_tcp
         exit_code=$?
         if [ $exit_code -eq 0 ]; then
           export DRBD_RMP_INSTALL='yes'
