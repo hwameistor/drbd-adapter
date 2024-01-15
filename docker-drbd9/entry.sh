@@ -248,11 +248,11 @@ if [ "$substr" != "deb" ]; then
     drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
     utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
-      nsenter -t 1 -n -u -i -m -- cp $drbd_rpm /pkgs_root/drbd.rpm
-      nsenter -t 1 -n -u -i -m -- cp $utils_rpm /pkgs_root/drbd_utils.rpm
-      nsenter -t 1 -n -u -i -m -- ls /root
-      nsenter -t 1 -n -u -i -m -- rpm -ivh  /pkgs_root/drbd.rpm
-      nsenter -t 1 -n -u -i -m -- rpm -ivh  /pkgs_root/drbd_utils.rpm
+      cp $drbd_rpm /pkgs_root/drbd.rpm
+      cp $utils_rpm /pkgs_root/drbd_utils.rpm
+      nsenter -t 1 -n -u -i -m -- ls /root/
+      nsenter -t 1 -n -u -i -m -- rpm -ivh  /root/drbd.rpm
+      nsenter -t 1 -n -u -i -m -- rpm -ivh  /root/drbd_utils.rpm
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
         nsenter -t 1 -n -u -i -m -- modprobe drbd
@@ -275,10 +275,10 @@ else
     drbd_deb=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
     utils_deb=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
-      nsenter -t 1 -n -u -i -m -- cp $drbd_deb /pkgs_root/drbd.deb
-      nsenter -t 1 -n -u -i -m -- cp $utils_deb /pkgs_root/drbd_utils.deb
-      nsenter -t 1 -n -u -i -m -- apt install -y /pkgs_root/drbd.deb
-      nsenter -t 1 -n -u -i -m -- apt install -y /pkgs_root/drbd_utils.deb
+      cp $drbd_deb /pkgs_root/drbd.deb
+      cp $utils_deb /pkgs_root/drbd_utils.deb
+      nsenter -t 1 -n -u -i -m -- apt install -y /root/drbd.deb
+      nsenter -t 1 -n -u -i -m -- apt install -y /root/drbd_utils.deb
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
         nsenter -t 1 -n -u -i -m -- modprobe drbd

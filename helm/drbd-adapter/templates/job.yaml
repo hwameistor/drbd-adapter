@@ -52,7 +52,7 @@ spec:
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
-        - name: pkgs_root
+        - name: pkgroot
           mountPath: /pkgs_root
       {{ if ne $distro "unsupported" }}
       - name: {{ $distro }}
@@ -84,7 +84,7 @@ spec:
         {{ end }}
         - name: pkgs
           mountPath: /pkgs
-        - name: pkgs_root
+        - name: pkgroot
           mountPath: /pkgs_root
         - name: os-release
           mountPath: /etc/host-release
@@ -111,7 +111,7 @@ spec:
       volumes:
       - name: pkgs
         emptyDir: {}
-      - name: pkgs_root
+      - name: pkgroot
         hostPath:
           path: /root
       - name: os-release
