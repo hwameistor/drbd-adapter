@@ -250,7 +250,7 @@ if [ "$substr" != "deb" ]; then
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
       nsenter -t 1 -n -u -i -m -- cp $drbd_rpm /pkgs_root/drbd.rpm
       nsenter -t 1 -n -u -i -m -- cp $utils_rpm /pkgs_root/drbd_utils.rpm
-      nsenter -t 1 -n -u -i -m -- ls /pkgs_root
+      nsenter -t 1 -n -u -i -m -- ls /root
       nsenter -t 1 -n -u -i -m -- rpm -ivh  /pkgs_root/drbd.rpm
       nsenter -t 1 -n -u -i -m -- rpm -ivh  /pkgs_root/drbd_utils.rpm
       exit_code=$?
