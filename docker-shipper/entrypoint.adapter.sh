@@ -61,8 +61,8 @@ elif LB_HOW=compile bash -x /entry.sh ; then
    echo "Successfully loaded compiled module"
 fi
 
-echo "DRBD_EXIST:$DRBD_EXIST"
-echo "DRBD_RMP_INSTALL:$DRBD_RMP_INSTALL"
+echo "DRBD IS ALREADY EXIST (yes or no):$DRBD_EXIST"
+echo "DRBD INSTALL BY PRM (yes or no) :$DRBD_RMP_INSTALL"
 #If the installation through rpm is successful, exit directly.
 if [[ $DRBD_RMP_INSTALL == 'yes' ]];then
   echo "Successfully installed rbd using rpm package"
