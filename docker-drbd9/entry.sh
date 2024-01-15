@@ -279,7 +279,6 @@ else
       nsenter -t 1 -n -u -i -m -- cp $utils_deb /pkgs_root/drbd_utils.deb
       nsenter -t 1 -n -u -i -m -- apt install -y /pkgs_root/drbd.deb
       nsenter -t 1 -n -u -i -m -- apt install -y /pkgs_root/drbd_utils.deb
-
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
         nsenter -t 1 -n -u -i -m -- modprobe drbd
