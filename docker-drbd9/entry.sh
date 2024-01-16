@@ -244,8 +244,9 @@ if [ -z "$OS_KERNEL" ]; then
     fi
 result=$(lbdisttool.py --os-release $HOSTRELEASE -l || echo "")
 substr="${result:0:3}"
-if [ "$substr" != "deb" ]; then
-    drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
+
+drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
+if [ -n "$drbd_rpm" ]; then
     utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
       cp $drbd_rpm /pkgs_root/drbd.rpm
