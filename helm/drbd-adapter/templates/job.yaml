@@ -53,8 +53,6 @@ spec:
         volumeMounts:
         - name: pkgs
           mountPath: /pkgs
-        - name: pkgroot
-          mountPath: /pkgs_root
       {{ if ne $distro "unsupported" }}
       - name: {{ $distro }}
         image: {{ $.Values.registry }}/drbd9-{{ $distro }}:{{ $tag }}

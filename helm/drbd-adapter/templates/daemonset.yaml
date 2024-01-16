@@ -81,6 +81,8 @@ spec:
         {{- end }}
         - name: pkgs
           mountPath: /pkgs
+        - name: pkgroot
+          mountPath: /pkgs_root
         - name: os-release
           mountPath: /etc/host-release
           readOnly: true
@@ -125,10 +127,14 @@ spec:
           mountPath: /pkgs
           readOnly: true
       hostNetwork: true
+      hostPID: true
       terminationGracePeriodSeconds: 0
       volumes:
       - name: pkgs
         emptyDir: {}
+      - name: pkgroot
+        hostPath:
+          path: /root
       - name: os-release
         hostPath:
           path: /etc/os-release
