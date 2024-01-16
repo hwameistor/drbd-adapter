@@ -250,7 +250,6 @@ if [ "$substr" != "deb" ]; then
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
       cp $drbd_rpm /pkgs_root/drbd.rpm
       cp $utils_rpm /pkgs_root/drbd_utils.rpm
-      ls  /root/
       nsenter --version
       nsenter --target 1 --mount --uts --ipc --net --pid ls  /root/
       nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd.rpm
