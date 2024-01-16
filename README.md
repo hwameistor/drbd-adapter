@@ -4,12 +4,12 @@
 
 `entrypoint.adapter.sh` wraps around the official containerized DRBD kernel module loader script `entry.sh` to achieve the following goals:
 
-1. Adapt host OS type automatically;
-2. Drop `drbd kernel modules` and `drbd-utils` , kmd-drbd.rpm to the host;
-3. Install drbd using the rpm consistent with the kernel version for RHEL/CentOS hosts;
-4. If the third step fails, Start use pre-built kernel modules for stock RHEL/CentOS hosts;
-5. If the third step fails,Use dynamically built kernel modules for un-stock RHEL/CentOS hosts；
-6. Use dynamically built kernel modules for Ubuntu hosts;
+1. Automatically adapt to the host operating system type;
+2. Automatically adapt to the host operating system kernel version
+3. For the host operating system kernel version supported by this system, drbd will be installed using the corresponding rpm/deb package in the code base.
+4. For host operating system kernel versions that are not currently supported by this system, download the corresponding version from the drbd official warehouse and install drbd.
+5. Use pre-built kernel modules for existing RHEL/CentOS hosts;
+6. Use dynamically built kernel modules for non-stock RHEL/CentOS hosts and Ubuntu hosts;
 7. Provide two deployment modes: Job (default) and DaemonSet
 
 ![flowchart](flowchart.drawio.svg)
