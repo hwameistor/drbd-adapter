@@ -274,8 +274,8 @@ if [ -n "$drbd_rpm" ]; then
     else debug "There is no corresponding kernel version rpm package or drbd-utils rpm package"
     fi
 else
-    drbd_deb=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
-    utils_deb=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
+    drbd_deb=$(find "$DEBDIR" -type f -name "*$OS_KERNEL*" -print -quit)
+    utils_deb=$(find "$DEBDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
       cp $drbd_deb /pkgs_root/drbd.deb
       cp $utils_deb /pkgs_root/drbd_utils.deb
