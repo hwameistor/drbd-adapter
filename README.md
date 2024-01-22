@@ -95,11 +95,11 @@ distros:
 Deploy the below `DaemonSet`. It will bring up a pod on each kubernetes worker node to install DRBD modules and tools:
 
 ```console
-$ helm repo add hwameistor https://hwameistor.io/hwameistor
+$ helm repo add drbd-adapter https://hwameistor.io/drbd-adapter/
 
-$ helm repo update hwameistor
+$ helm repo update drbd-adapter
 
-$ helm pull hwameistor/drbd-adapter --untar
+$ helm pull drbd-adapter/drbd-adapter --untar
 
 $ helm install drbd-adapter ./drbd-adapter -n hwameistor --create-namespace
 ```
