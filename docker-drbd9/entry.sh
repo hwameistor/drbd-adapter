@@ -253,8 +253,8 @@ if [ -n "$drbd_rpm" ]; then
       cp $utils_rpm /pkgs_root/drbd_utils.rpm
       nsenter --version
       nsenter --target 1 --mount --uts --ipc --net --pid ls  /root/
-      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd.rpm
       nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd_utils.rpm
+      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd.rpm
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
         nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd
@@ -279,11 +279,8 @@ else
     if [[ -n "$drbd_deb"  && -n "$utils_deb" ]]; then
       cp $drbd_deb /pkgs_root/drbd.deb
       cp $utils_deb /pkgs_root/drbd_utils.deb
-      #cp $DEBDIR/install_deb.sh /pkgs_root/install_deb.sh
-      #nsenter --target 1 --mount --uts --ipc --net --pid chmod +X /root/install_deb.sh
-      #nsenter --target 1 --mount --uts --ipc --net --pid ./root/install_deb.sh
       nsenter --target 1 --mount --uts --ipc --net --pid apt install -y /root/drbd_utils.deb
-      nsenter --target 1 --mount --uts --ipc --net --pid apt install -y /root/drbd.deb &
+      nsenter --target 1 --mount --uts --ipc --net --pid apt install -y /root/drbd.deb
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
         nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd
