@@ -92,7 +92,7 @@ if [[ $LB_DROP == yes ]]; then
    cp -vf /pkgs/drbd.modules /etc/sysconfig/modules/
 
    # drop drbd utils and set up conf directories
-   cp -vf /pkgs/utils/* /usr/local/bin/
+   cp -vf /pkgs/utils/* /usr-local-bin
    cat /pkgs/drbd.conf > /etc/drbd.conf
    cp -vf /pkgs/global_common.conf /etc/drbd.d/
    
