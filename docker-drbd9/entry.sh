@@ -280,8 +280,8 @@ else
       cp $drbd_deb /pkgs_root/drbd.deb
       cp $utils_deb /pkgs_root/drbd_utils.deb
       nsenter --target 1 --mount --uts --ipc --net --pid ls  /root/
-      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd.deb
-      nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd_utils.deb
+      nsenter --target 1 --mount --uts --ipc --net --pid apt install /root/drbd.deb
+      nsenter --target 1 --mount --uts --ipc --net --pid apt install  /root/drbd_utils.deb
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
         nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd
