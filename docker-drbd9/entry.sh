@@ -285,7 +285,7 @@ else
       nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/install_deb.sh
       nsenter --target 1 --mount --uts --ipc --net --pid ./root/install_deb.sh
       exit_code=$?
-      if [ $exit_code -eq 0 ]; then
+      if [ $exit_code -eq 0 ] || [ $exit_code -eq 13 ]; then
         nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd
         nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd_transport_tcp
         exit_code=$?
