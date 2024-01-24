@@ -7,7 +7,7 @@ set timeout 600
 
 spawn sh -c $install_cmd1
 expect {
-    "\"*** drbd.conf (Y/I/N/O/D/Z) \[default=N\] ?\"" {
+    "Configuration file '/etc/drbd.conf'" {
         send "Y\r"
         exp_continue
     }
@@ -18,7 +18,7 @@ expect {
         # 第一个安装命令结束后的处理逻辑
         spawn sh -c $install_cmd2
         expect {
-            "\"*** drbd.conf (Y/I/N/O/D/Z) \[default=N\] ?\"" {
+            "Configuration file '/etc/drbd.conf'" {
                 send "Y\r"
                 exp_continue
             }
