@@ -279,8 +279,11 @@ else
     if [[ -n "$drbd_deb"  && -n "$utils_deb" ]]; then
       cp $drbd_deb /pkgs_root/drbd.deb
       cp $utils_deb /pkgs_root/drbd_utils.deb
-      nsenter --target 1 --mount --uts --ipc --net --pid apt install -y /root/drbd_utils.deb
-      nsenter --target 1 --mount --uts --ipc --net --pid apt install -y /root/drbd.deb
+      cp $DEBDIR/install_deb.sh /pkgs_root/install_deb.sh
+      #nsenter --target 1 --mount --uts --ipc --net --pid apt install -y /root/drbd_utils.deb
+      nsenter --target 1 --mount --uts --ipc --net --pid apt install -y expect
+      nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/install_deb.sh
+      nsenter --target 1 --mount --uts --ipc --net --pid ./root/install_deb.sh
       exit_code=$?
       if [ $exit_code -eq 0 ]; then
         nsenter --target 1 --mount --uts --ipc --net --pid  modprobe drbd
