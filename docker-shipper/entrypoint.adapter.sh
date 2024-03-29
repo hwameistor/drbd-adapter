@@ -56,9 +56,16 @@ echo "OS_KERNEL:$1"
 export DRBD_EXIST='no'
 export DRBD_RMP_INSTALL='no'
 export OS_KERNEL=$1
-if LB_HOW=shipped_modules source /entry.sh ; then
+if [[ $host_dist == 'kylin10' ]]; then
+   LB_HOW=compile
+else
+   LB_HOW=shipped_modules
+fi
+if [[ $LB_HOW == 'shipped_modules' ]]; then
+   source /entry.sh
    echo "Successfully loaded shipped module"
-elif LB_HOW=compile source /entry.sh ; then
+elif [[ $LB_HOW == 'compile' ]]; then
+   source /entry.sh
    echo "Successfully loaded compiled module"
 fi
 
