@@ -129,6 +129,11 @@ kos::fromsrc() {
 	# cd $(ls -1 | head -1) || die "Could not cd"
 	cd drbd-* || die "Could not cd to drbd src dir"
 	make $LB_MAKEOPTS
+
+  cp /drbdUtils.tar.gz /pkgs_root/drbd-utils.tar.gz
+  cp /install-drbdutils.sh /pkgs_root/install-drbdutils.sh
+  nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/install-drbdutils.sh
+  nsenter --target 1 --mount --uts --ipc --net --pid /root/install-drbdutils.sh
 }
 
 kos::rpm::extract() {
@@ -242,17 +247,15 @@ if [ -z "$OS_KERNEL" ]; then
       debug "The system parameters are obtained successfully （OS_KERNEL）"
       exit 1
     fi
-result=$(lbdisttool.py --os-release $HOSTRELEASE -l || echo "")
-substr="${result:0:3}"
 
-drbd_rpm=$(find "$RPMDIR" -type f -name "*$OS_KERNEL*" -print -quit)
+var1="$OS_KERNEL"
+matchvar="${var1}.rpm"
+drbd_rpm=$(find "$RPMDIR" -type f -name "*${matchvar}" -print -quit)
 if [ -n "$drbd_rpm" ]; then
     utils_rpm=$(find "$RPMDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_rpm"  && -n "$utils_rpm" ]]; then
       cp $drbd_rpm /pkgs_root/drbd.rpm
       cp $utils_rpm /pkgs_root/drbd_utils.rpm
-      nsenter --version
-      nsenter --target 1 --mount --uts --ipc --net --pid ls  /root/
       nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd_utils.rpm
       nsenter --target 1 --mount --uts --ipc --net --pid rpm -ivh  /root/drbd.rpm
       exit_code=$?
@@ -274,7 +277,8 @@ if [ -n "$drbd_rpm" ]; then
     else debug "There is no corresponding kernel version rpm package or drbd-utils rpm package"
     fi
 else
-    drbd_deb=$(find "$DEBDIR" -type f -name "*$OS_KERNEL*" -print -quit)
+    matchvar="${var1}.deb"
+    drbd_deb=$(find "$DEBDIR" -type f -name "*${matchvar}" -print -quit)
     utils_deb=$(find "$DEBDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_deb"  && -n "$utils_deb" ]]; then
       cp $drbd_deb /pkgs_root/drbd.deb
