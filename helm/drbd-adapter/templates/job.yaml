@@ -58,7 +58,7 @@ spec:
         image: {{ $.Values.registry }}/drbd9-{{ $distro }}:{{ $tag }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         command:
-          - /pkgs/entrypoint.adapter.sh
+          - /entrypoint.adapter.sh
           - {{ $kernelVersion }}
         securityContext:
           privileged: true
