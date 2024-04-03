@@ -36,9 +36,21 @@ FROM centos:8 AS compiler-centos8
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 RUN yum install -y --nogpgcheck wget elfutils-libelf-devel kernel-rpm-macros kernel-abi-whitelists gcc flex glibc-devel make automake rpm-build which && \
+    yum install -y --nogpgcheck patch kmod cpio python3 python3-pip git openssl && \
+    yum install -y curl m4 openssl-devel ncurses-devel && \
     yum -y clean all
 
-# Install kernel-devels of each CentOS 7 major release
+RUN dnf -y install bubblewrap unzip
+COPY /install_opam.sh /
+RUN chmod +x /install_opam.sh && /install_opam.sh
+RUN opam init -y
+RUN opam switch create 5.1.1
+RUN opam install -y ocaml-lsp-server odoc ocamlformat utop
+
+RUN git clone https://github.com/coccinelle/coccinelle.git
+RUN cd coccinelle  && opam switch 5.1.1 && eval $(opam env) && ./autogen  && ./configure  && make  && make install
+
+# Install kernel-devels of each CentOS 8 major release
 # Must rpm install a kernel-devel for prereq
 COPY kernel-devels.centos8 /pkgs/
 RUN echo "centos8 arch:$(arch)"
@@ -49,7 +61,7 @@ RUN cat /pkgs/kernel-devels.centos8 | grep -v ^# | grep $(arch) |  awk '{print $
     ls -1 *.rpm | tail -n+2 | xargs -tI % sh -xc 'rpm2cpio % | cpio -idm' && \
     rm -vf *.rpm
 
-# Compile kmod-drbd for each CentOS 7 major release
+# Compile kmod-drbd for each CentOS 8 major release
 ARG DRBD_VER
 RUN wget --no-check-certificate https://pkg.linbit.com//downloads/drbd/"$([[ $DRBD_VER =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VER}.tar.gz && \
     tar -zxf drbd-${DRBD_VER}.tar.gz
