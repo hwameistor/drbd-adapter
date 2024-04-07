@@ -2,8 +2,6 @@ FROM gentoo/stage3
 MAINTAINER Roland Kammerer <roland.kammerer@linbit.com>
 
 COPY /drbd.tar.gz /
-COPY /entrypoint.adapter.sh /
-RUN chmod +x /entrypoint.adapter.sh
 COPY /entry.sh /
 RUN chmod +x /entry.sh
 ENTRYPOINT /entry.sh
