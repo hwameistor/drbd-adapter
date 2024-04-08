@@ -130,7 +130,8 @@ kos::fromsrc() {
 	cd drbd-* || die "Could not cd to drbd src dir"
 	make $LB_MAKEOPTS
 
-  cp /drbdUtils.tar.gz /pkgs_root/drbd-utils.tar.gz
+  #cp /drbdUtils.tar.gz /pkgs_root/drbd-utils.tar.gz
+  tar xf /drbdUtils.tar.gz -C /pkgs_root/
   cp /install-drbdutils.sh /pkgs_root/install-drbdutils.sh
   nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/install-drbdutils.sh
   nsenter --target 1 --mount --uts --ipc --net --pid /root/install-drbdutils.sh
