@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y kmod gnupg wget make gcc patch curl && 
 COPY /drbd.tar.gz /
 
 COPY /pkgs /pkgs
+COPY /config-drbd.sh /
 COPY /entry.sh /
 RUN chmod +x /entry.sh
 

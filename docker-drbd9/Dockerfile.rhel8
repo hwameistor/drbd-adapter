@@ -46,7 +46,7 @@ RUN wget --no-check-certificate https://pkg.linbit.com/downloads/drbd/"$([[ $DRB
 
 # these are now the kmod pkgs:
 COPY /pkgs /pkgs
-
+COPY /config-drbd.sh /
 COPY /entry.sh /
 RUN chmod +x /entry.sh
 
