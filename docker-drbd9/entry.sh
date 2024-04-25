@@ -371,4 +371,9 @@ else
 fi
 
 grep -q '^drbd_transport_tcp' /proc/modules || die "Could not load DRBD kernel modules"
+
+cp /config-drbd.sh /pkgs_root/config-drbd.sh
+nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/config-drbd.sh
+nsenter --target 1 --mount --uts --ipc --net --pid /root/config-drbd.sh
+
 print_drbd_version_and_exit

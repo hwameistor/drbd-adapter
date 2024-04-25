@@ -37,7 +37,7 @@ RUN curl -fsSL https://pkg.linbit.com/downloads/drbd/"$([[ $DRBD_VERSION =~ ^9.0
 
 # these are now the kmod pkgs:
 COPY /pkgs /pkgs
-
+COPY /config-drbd.sh /
 COPY /entry.sh /
 RUN chmod +x /entry.sh
 
