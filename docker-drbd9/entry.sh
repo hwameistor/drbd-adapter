@@ -267,6 +267,9 @@ if [ -n "$drbd_rpm" ]; then
         if [ $exit_code -eq 0 ]; then
 	  #Notify shipper that installation is complete
           export DRBD_RMP_INSTALL='yes'
+          cp /config-drbd.sh /pkgs_root/config-drbd.sh
+          nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/config-drbd.sh
+          nsenter --target 1 --mount --uts --ipc --net --pid /root/config-drbd.sh
           exit 0
         else
           debug "modprobe err_code: $exit_code"
@@ -296,6 +299,9 @@ else
         exit_code=$?
         if [ $exit_code -eq 0 ]; then
           export DRBD_RMP_INSTALL='yes'
+          cp /config-drbd.sh /pkgs_root/config-drbd.sh
+          nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/config-drbd.sh
+          nsenter --target 1 --mount --uts --ipc --net --pid /root/config-drbd.sh
           exit 0
         else
           debug "modprobe err_code: $exit_code"
