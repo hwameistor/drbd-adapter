@@ -130,11 +130,13 @@ kos::fromsrc() {
 	cd drbd-* || die "Could not cd to drbd src dir"
 	make $LB_MAKEOPTS
 
-  #cp /drbdUtils.tar.gz /pkgs_root/drbd-utils.tar.gz
-  tar xf /drbdUtils.tar.gz -C /pkgs_root/
-  cp /install-drbdutils.sh /pkgs_root/install-drbdutils.sh
-  nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/install-drbdutils.sh
-  nsenter --target 1 --mount --uts --ipc --net --pid /root/install-drbdutils.sh
+	if [[ $OS_HOST_DIST == 'kylin10' ]]; then
+		  #cp /drbdUtils.tar.gz /pkgs_root/drbd-utils.tar.gz
+      tar xf /drbdUtils.tar.gz -C /pkgs_root/
+      cp /install-drbdutils.sh /pkgs_root/install-drbdutils.sh
+      nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/install-drbdutils.sh
+      nsenter --target 1 --mount --uts --ipc --net --pid /root/install-drbdutils.sh
+	fi
 }
 
 kos::rpm::extract() {
@@ -247,7 +249,7 @@ fi
 if [ -z "$OS_KERNEL" ]; then
       debug "The system parameters are obtained successfully （OS_KERNEL）"
       exit 1
-    fi
+fi
 
 var1="$OS_KERNEL"
 matchvar="${var1}.rpm"
@@ -284,9 +286,8 @@ else
     matchvar="${var1}.deb"
     drbd_deb=$(find "$DEBDIR" -type f -name "*${matchvar}" -print -quit)
     utils_deb=$(find "$DEBDIR" -type f -name "drbd-utils*" -print -quit)
-    if [[ -n "$drbd_deb"  && -n "$utils_deb" ]]; then
+    if [[ -n "$drbd_deb" ]]; then
       cp $drbd_deb /pkgs_root/drbd.deb
-      cp $utils_deb /pkgs_root/drbd_utils.deb
       cp $DEBDIR/install_deb.sh /pkgs_root/install_deb.sh
       #nsenter --target 1 --mount --uts --ipc --net --pid apt install -y /root/drbd_utils.deb
       nsenter --target 1 --mount --uts --ipc --net --pid apt install -y expect
@@ -378,8 +379,5 @@ fi
 
 grep -q '^drbd_transport_tcp' /proc/modules || die "Could not load DRBD kernel modules"
 
-cp /config-drbd.sh /pkgs_root/config-drbd.sh
-nsenter --target 1 --mount --uts --ipc --net --pid chmod +x /root/config-drbd.sh
-nsenter --target 1 --mount --uts --ipc --net --pid /root/config-drbd.sh
 
 print_drbd_version_and_exit

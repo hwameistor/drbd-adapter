@@ -1,0 +1,44 @@
+FROM centos:8 AS kylin-base
+
+ENV KYLIN_ROOT '/kylin/rootfs'
+
+COPY kylin10.repo /
+
+RUN set -x && \
+	rm -vf /etc/yum.repos.d/*.repo && \
+	cp -vf /kylin10.repo /etc/yum.repos.d/ && \
+	mkdir -vp ${KYLIN_ROOT} && \
+	rpm --root ${KYLIN_ROOT} --initdb && \
+	yum install -y --downloadonly --downloaddir . kylin-release kylin-repos kylin-gpg-keys && \
+	rpm --root ${KYLIN_ROOT} -ivh --force --nodeps kylin-release*.rpm kylin-repos*.rpm kylin-gpg-keys*.rpm && \
+	rpm --root ${KYLIN_ROOT} --import ${KYLIN_ROOT}/etc/pki/rpm-gpg/RPM-GPG-KEY-kylin && \
+	rm -vf *.rpm
+
+RUN set -x && \
+	yum -y --installroot=${KYLIN_ROOT} --setopt=tsflags='nodocs' --setopt=override_install_langs=en_US.utf8 \
+	install tar wget gcc make patch curl kmod cpio python3 elfutils-libelf-devel python2 hostname && \
+	yum -y --installroot=${KYLIN_ROOT} clean all
+
+FROM scratch
+
+COPY --from=kylin-base /kylin/rootfs/ /
+
+ENV DRBD_VERSION 9.1.8
+
+RUN cd /tmp && wget https://github.com/LINBIT/python-lbdist/archive/master.tar.gz && \
+	tar xvf master.tar.gz && \
+	( cd python-lbdist-master && python setup.py install ) && \
+	rm -rf python-lbdist-master master.tar.gz
+
+# one can not comment copy
+RUN wget --no-check-certificate https://pkg.linbit.com/downloads/drbd/"$([[ $DRBD_VERSION =~ ^9.0 ]] && echo 9.0 || echo 9 )"/drbd-${DRBD_VERSION}.tar.gz -O /drbd.tar.gz # !lbbuild
+# =lbbuild COPY /drbd.tar.gz /
+
+# these are now the kmod pkgs:
+COPY /pkgs /pkgs
+COPY /drbdUtils.tar.gz /
+COPY /install-drbdutils.sh /
+COPY /config-drbd.sh /
+COPY /entry.sh /
+RUN chmod +x /entry.sh
+ENTRYPOINT /entry.sh
