@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 ROOT_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-CHART_VER ?= 0.4.1
+CHART_VER ?= 0.4.2
 DRBD_VER ?= 9.0.32-1# another tested value is: 9.1.11
 DRBD_UTILS_VER ?= 9.12.1# another tested value is: 9.21.4
 
@@ -29,7 +29,7 @@ update_chart_ver:
 
 drbd9:
 	 cd docker-drbd9 && \
-	 ./build.sh $(DRBD_VER) $(ARCH) $(REG) $(IMG)
+	 ./build.sh $(DRBD_VER) $(ARCH) $(REG) $(CHART_VER) $(IMG)
 
 compiler-centos7:
 	for a in $(shell echo $(ARCH) | tr ',' ' '); do \
@@ -112,7 +112,7 @@ test:
 push:
 	set -x; \
 	for i in $(IMG); do \
-		[ $$i = "shipper" ] && ver=$(DRBD_VER)_v$(CHART_VER) || ver=$(DRBD_VER); \
+		ver=$(DRBD_VER)_v$(CHART_VER); \
 		docker manifest rm $(REG)/drbd9-$$i:v$${ver}; \
 			for a in $(shell echo $(ARCH) | tr ',' ' ' ); do \
 				docker push $(REG)/drbd9-$$i:v$${ver}_$${a/\//-} || \
