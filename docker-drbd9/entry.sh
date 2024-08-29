@@ -285,7 +285,6 @@ if [ -n "$drbd_rpm" ]; then
 else
     matchvar="${var1}.deb"
     drbd_deb=$(find "$DEBDIR" -type f -name "*${matchvar}" -print -quit)
-    utils_deb=$(find "$DEBDIR" -type f -name "drbd-utils*" -print -quit)
     if [[ -n "$drbd_deb" ]]; then
       cp $drbd_deb /pkgs_root/drbd.deb
       cp $DEBDIR/install_deb.sh /pkgs_root/install_deb.sh
@@ -310,7 +309,7 @@ else
       else
         debug "apt install err_code: $exit_code"
       fi
-    else debug "There is no corresponding kernel version deb package or drbd-utils deb package"
+    else debug "There is no corresponding kernel version deb package"
     fi
 fi
 

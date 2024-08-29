@@ -55,7 +55,7 @@ spec:
           mountPath: /pkgs
       {{ if ne $distro "unsupported" }}
       - name: {{ $distro }}
-        image: {{ $.Values.registry }}/drbd9-{{ $distro }}:{{ $tag }}
+        image: {{ $.Values.registry }}/drbd9-{{ $distro }}:{{ $tag }}_{{ $.Chart.Version }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         command:
           - /pkgs/entrypoint.adapter.sh
