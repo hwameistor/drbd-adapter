@@ -53,7 +53,7 @@ spec:
         {{- $tag = "v9.1.11" }}
       {{- end }}
       - name: {{ $dist }}
-        image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $tag }}
+        image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $tag }}_{{ $.Chart.Version }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         command: 
 	       - /pkgs/entrypoint.adapter.sh
