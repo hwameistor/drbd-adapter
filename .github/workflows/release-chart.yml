@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "helm/drbd-adapter/Chart.yaml"
+    workflow_dispatch:
 
 jobs:
   release-chart:
