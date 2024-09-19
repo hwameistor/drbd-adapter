@@ -32,15 +32,15 @@ spec:
         {{- range $index, $node := (lookup "v1" "Node" "" "").items }}
           {{- $osImage := lower $node.status.nodeInfo.osImage }}
           {{- with . -}}
-            {{- if regexMatch "(red hat enterprise|centos) .*7" $osImage }}
+            {{- if regexMatch "(red hat enterprise|centos) .*7([\\s\\-\\.]|$)" $osImage }}
               {{- $distros = append $distros "rhel7" }}
-            {{- else if regexMatch "(red hat enterprise|centos) .*8" $osImage }}
+            {{- else if regexMatch "(red hat enterprise|centos) .*8([\\s\\-\\.]|$)" $osImage }}
               {{- $distros = append $distros "rhel8" }}
-            {{- else if regexMatch "ubuntu .*18" $osImage }}
+            {{- else if regexMatch "ubuntu .*18([\\s\\-\\.]|$)" $osImage }}
               {{- $distros = append $distros "bionic" }}
-            {{- else if regexMatch "ubuntu .*20" $osImage }}
+            {{- else if regexMatch "ubuntu .*20([\\s\\-\\.]|$)" $osImage }}
               {{- $distros = append $distros "focal" }}
-            {{- else if regexMatch "ubuntu .*22" $osImage }}
+            {{- else if regexMatch "ubuntu .*22([\\s\\-\\.]|$)" $osImage }}
               {{- $distros = append $distros "jammy" }}
             {{- end }}
           {{- end }}
