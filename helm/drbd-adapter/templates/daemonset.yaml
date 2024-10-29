@@ -49,9 +49,6 @@ spec:
       {{- range $index, $dist := $distros | uniq }}
       {{- if regexMatch "^(rhel[78]|bionic|focal|jammy)$" $dist }}
       {{- $tag := $.Values.drbdVersion  }}
-      {{- if eq $dist "jammy" }}
-        {{- $tag = "v9.1.11" }}
-      {{- end }}
       - name: {{ $dist }}
         image: {{ $.Values.registry }}/drbd9-{{ $dist }}:{{ $tag }}_{{ $.Chart.Version }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
