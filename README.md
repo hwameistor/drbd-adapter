@@ -104,13 +104,13 @@ $ helm pull drbd-adapter/drbd-adapter --untar
 $ helm install drbd-adapter ./drbd-adapter -n hwameistor --create-namespace
 ```
 
-Users in China may use daocloud.io/daocloud mirror to accelerate image pull:
+Users in China may use gcr.m.daocloud.io mirror to accelerate image pull:
 
 ```console
 $ helm install drbd-adapter ./drbd-adapter \
     -n hwameistor --create-namespace \
     --set imagePullPolicy=Always \
-    --set registry=daocloud.io/daocloud
+    --set registry=gcr.m.daocloud.io/hwameistor
 ```
 
 #### Experiment DRBD v9.1.11
@@ -121,7 +121,7 @@ Only for Experiments!
  $ helm install drbd-adapter ./drbd-adapter \
     -n hwameistor --create-namespace \
     --set imagePullPolicy=Always \
-    --set registry=daocloud.io/daocloud \
+    --set registry=gcr.m.daocloud.io/hwameistor\
     --set drbdVersion=v9.1.11
 ```
 
