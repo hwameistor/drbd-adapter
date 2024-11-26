@@ -1,5 +1,10 @@
 From ghcr.io/hwameistor/drbd9-rhel7:v9.0.32-1
 
+#RUN yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical && \
+#    yum clean all
+RUN yum install -y epel-release && \
+    yum update -y nss nss-sysinit nss-tools && \
+    yum clean all
 COPY /config-drbd.sh /
 COPY /entry.sh /
 RUN chmod +x /entry.sh
